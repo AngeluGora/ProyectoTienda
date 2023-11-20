@@ -97,8 +97,8 @@ $totalPaginas = $anunciosData['totalPages'];
 <body>
     <div class="contenido">
     <header>
-            <img src="img/logo.png" alt="Logo de la web" class="logo">
-            <nav class="menu">
+        <img src="img/logo.png" alt="Logo de la web" class="logo">
+        <nav class="menu">
             <a href="index.php" class="enlaceMenu">Anuncios</a>
             <a href="php/misAnuncios.php" class="enlaceMenu">Mis Anuncios</a>
             <div id="enlaceform">
@@ -120,7 +120,7 @@ $totalPaginas = $anunciosData['totalPages'];
 
         <main>
             <h1>Bienvenido a Angelu Store</h1>
-            <h3>En nuestra tienda podrás encontrar todo tipo de artículos de segunda mano.<br> Si no lo usas, ¡GUÁRDALO!</h3>
+            <h3>En nuestra tienda podrás encontrar todo tipo de artículos de segunda mano.<br> Si no lo usas, ¡STOREALO!</h3>
             
             <div class="contenedorAnuncios">
                 <?php foreach ($anuncios as $anuncio): ?>
@@ -139,7 +139,7 @@ $totalPaginas = $anunciosData['totalPages'];
                                 </span>
                             <?php endif; ?>
                         </div>
-                        <img src="<?=$anuncio->getFoto()?>" alt="Foto del anuncio">
+                        <img src="php/fotosAnuncios/<?=$anuncio->getFoto()?>" alt="Foto del anuncio" class="fotoAnuncio">
                         <h4 class="titulo">
                             <a href="php/ver_anuncio.php?id=<?=$anuncio->getId()?>"><?= $anuncio->getTitulo() ?></a>
                         </h4>

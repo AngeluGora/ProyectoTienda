@@ -29,7 +29,6 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
         $error = "Ya hay un usuario con ese email";
     }
     else{
-
         //Copiamos la foto al disco
         if($_FILES['foto']['type'] != 'image/jpeg' &&
         $_FILES['foto']['type'] != 'image/webp' &&
@@ -83,9 +82,31 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/estilos.css">
     <title>REGISTO</title>
 </head>
 <body>
+    <header>
+        <img src="img/logo.png" alt="Logo de la web" class="logo">
+        <nav class="menu">
+            <a href="index.php" class="enlaceMenu">Anuncios</a>
+            <a href="php/misAnuncios.php" class="enlaceMenu">Mis Anuncios</a>
+            <div id="enlaceform">
+            <?php if(isset($_SESSION['email'])): ?>
+            <img src="fotosUsuarios/<?= $_SESSION['foto']?>" class="fotoUsuario">
+            <span class="emailUsuario"><?= $_SESSION['email'] ?></span>
+            <a href="php/logout.php">Cerrar sesión</a>
+            <?php else: ?>
+            <form action="php/login.php" method="post">
+            <input type="email" name="email" placeholder="email">
+            <input type="password" name="password" placeholder="password">
+            <input type="submit" value="login">
+            </form>
+            <a href="php/registrar.php">Registrar</a>
+            <?php endif; ?>
+            </div>
+        </nav>
+    </header>
     <h1>Registro</h1>
     <?= $error ?>
     <form action="registrar.php" method="post" enctype="multipart/form-data">
@@ -94,9 +115,9 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
         <input type="password" name="password" placeholder="Contraseña"><br>
         <input type="text" name="telefono" placeholder="Telefono"><br>
         <input type="text" name="poblacion" placeholder="Poblacion"><br>
-        <input type="file" name="foto" accept="image/jpeg, image/gif, image/webp, image/png"><br>
+        <input type="file" name="foto" accept="image/jpeg, image/gif, image/webp, image/png" required><br>
         <input type="submit" value="registrar">
-        <a href="index.php">volver</a>
+        <a href="../index.php">volver</a>
     </form>
 </body>
 </html>

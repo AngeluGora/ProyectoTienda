@@ -1,19 +1,26 @@
+ *{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+} 
+
 body {
     max-width: 90%;
-    height: 100%;
     padding: 0;
-    margin:0 auto;
-    background-color: rgb(254, 215, 179);
+    margin: 0 auto;
+    background-color: rgb(254, 215, 179); 
 }
 .contenido{
     margin: 0 auto;
     padding:0;
-    background-color: #ffbd87;
+    background-color: #ffbd87; 
+}
+header{
+    padding: 2% 0;
 }
 .logo {
-    padding-top: 2%;
+    margin: 3% auto;
     display: block;
-    margin: 2% auto;
 }
 
 .menu {
@@ -86,9 +93,10 @@ h3{
 }
 
 .anuncio img {
-    max-width: 100%;
-    border-radius: 8px;
-    margin-bottom: 10px;
+    max-width: 100%; /* Tamaño máximo del ancho de la imagen */
+    height: auto; /* Altura automática para mantener la proporción */
+    display: block; /* Evita espacios debajo de la imagen */
+    margin: 0 auto;
 }
 
 .anuncio h4 {

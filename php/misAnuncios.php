@@ -35,6 +35,7 @@ $anuncios = $anunciosDAO->getAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/estilos.css">
     <title>Mis Anuncios</title>
     </style>
 </head>
@@ -117,26 +118,26 @@ $anuncios = $anunciosDAO->getAll();
 </script>
 <body>
     <header>
-        <img src="logo.png" alt="Logo de la web" style="max-width: 100%;">
-
+        <img src="../img/logo.png" alt="Logo de la web" class="logo">
         <nav class="menu">
-            <a href="../index.php">Anuncios</a>
-            <a href="#">Mis Anuncios</a>
-        <?php if(isset($_SESSION['email'])): ?>
+            <a href="../index.php" class="enlaceMenu">Anuncios</a>
+            <a href="misAnuncios.php" class="enlaceMenu">Mis Anuncios</a>
+            <div id="enlaceform">
+            <?php if(isset($_SESSION['email'])): ?>
             <img src="fotosUsuarios/<?= $_SESSION['foto']?>" class="fotoUsuario">
             <span class="emailUsuario"><?= $_SESSION['email'] ?></span>
-            <a href="logout.php">Cerrar sesión</a>
-        <?php else: ?>
-        <form action="login.php" method="post">
+            <a href="php/logout.php">Cerrar sesión</a>
+            <?php else: ?>
+            <form action="php/login.php" method="post">
             <input type="email" name="email" placeholder="email">
             <input type="password" name="password" placeholder="password">
             <input type="submit" value="login">
-        </form>
-        <a href="registrar.php">Registrar</a>
-    <?php endif; ?>
+            </form>
+            <a href="registrar.php">Registrar</a>
+            <?php endif; ?>
+            </div>
         </nav>
     </header>
-
     <main>
         <h1>Bienvenido a "Mis Anuncios"</h1>
         <h3>Aqui puedes crear, ver, editar y modificar tus anuncios.</3>
@@ -147,7 +148,7 @@ $anuncios = $anunciosDAO->getAll();
         <?php if(isset($_SESSION['email']) && $_SESSION['id'] == $anuncio->getIdUsuario()): ?>
         <article class="anuncio">
         <h4 class="titulo"><a href="php/ver_anuncio.php?id=<?=$anuncio->getId()?>"><?= $anuncio->getTitulo() ?></a></h4>
-        <img src="<?=$anuncio->getFoto()?>" alt="Foto del anuncio">
+        <img src="./fotoAnuncios/<?=$anuncio->getFoto()?>" alt="Foto del anuncio">
         <p class="descripcion"><?= $anuncio->getDescripcion() ?></p>
         <p class="precio"><?= $anuncio->getPrecio()?></p>
         </article>

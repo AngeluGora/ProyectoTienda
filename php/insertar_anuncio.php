@@ -41,7 +41,9 @@
         if(empty($titulo) || empty($descripcion)){
             $error = "Los dos campos son obligatorios";
         }
-        else{
+        elseif(empty($foto)){
+                $error="Tiene que insertar una foto";
+            }else{
             if($_FILES['foto']['type'] != 'image/jpeg' &&
             $_FILES['foto']['type'] != 'image/webp' &&
             $_FILES['foto']['type'] != 'image/png')
@@ -77,8 +79,7 @@
                 header('location: ../index.php');
                 die();
             }
-
-    }
+        }
 
     ?>
 
@@ -87,15 +88,37 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../css/estilos.css">
         <title>Inserta Anuncio</title>
     </head>
 
     <body>
+    <header>
+        <img src="img/logo.png" alt="Logo de la web" class="logo">
+        <nav class="menu">
+            <a href="index.php" class="enlaceMenu">Anuncios</a>
+            <a href="php/misAnuncios.php" class="enlaceMenu">Mis Anuncios</a>
+            <div id="enlaceform">
+            <?php if(isset($_SESSION['email'])): ?>
+            <img src="fotosUsuarios/<?= $_SESSION['foto']?>" class="fotoUsuario">
+            <span class="emailUsuario"><?= $_SESSION['email'] ?></span>
+            <a href="php/logout.php">Cerrar sesión</a>
+            <?php else: ?>
+            <form action="php/login.php" method="post">
+            <input type="email" name="email" placeholder="email">
+            <input type="password" name="password" placeholder="password">
+            <input type="submit" value="login">
+            </form>
+            <a href="php/registrar.php">Registrar</a>
+            <?php endif; ?>
+            </div>
+        </nav>
+    </header>
         <?= $error ?>
         <form action="insertar_anuncio.php" method="post" enctype="multipart/form-data">
             <input type="text" name="titulo" placeholder="Titulo"><br>
             <textarea name="descripcion" placeholder="Descripcion"></textarea><br>
-            <input type="number" step="0.01" name="precio" placeholder="Precio" min="0.01" required><br>
+            <input type="number" step="0.01" name="precio" placeholder="Precio" min="0.01" ><br>
             <input type="file" name="foto" accept="image/jpeg, image/gif, image/webp, image/png"><br>
             <!-- Código del desplegable si es necesario -->
             <!--<select name="idUsuario">

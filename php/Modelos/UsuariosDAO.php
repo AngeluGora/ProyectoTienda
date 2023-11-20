@@ -1,4 +1,5 @@
 <?php
+require_once 'Usuario.php';
 
 class UsuariosDAO {
     private mysqli $conn;
@@ -37,27 +38,28 @@ class UsuariosDAO {
      * Obtiene un usuario de la BD en función del sid
      * @return Usuario Devuelve un Objeto de la clase Usuario o null si no existe
      */
-    public function getBySid($sid):Usuario|null {
-        if(!$stmt = $this->conn->prepare("SELECT * FROM usuarios WHERE sid = ?"))
-        {
+    public function getBySid($sid): Usuario|null {
+        if(!$stmt = $this->conn->prepare("SELECT * FROM usuarios WHERE sid = ?")) {
             echo "Error en la SQL: " . $this->conn->error;
         }
-        //Asociar las variables a las interrogaciones(parámetros)
-        $stmt->bind_param('s',$sid);
-        //Ejecutamos la SQL
+    
+        $stmt->bind_param('s', $sid);
         $stmt->execute();
-        //Obtener el objeto mysql_result
         $result = $stmt->get_result();
-
-        //Si ha encontrado algún resultado devolvemos un objeto de la clase Mensaje, sino null
-        if($result->num_rows >= 1){
-            $usuario = $result->fetch_object(Usuario::class);
+    
+        if($result->num_rows >= 1) {
+            $row = $result->fetch_assoc();
+            $usuario = new Usuario();
+            $usuario->setId($row['id']); // Asegúrate de ajustar estos nombres según tu estructura de base de datos
+            $usuario->setEmail($row['email']);
+            // Otros setters con los campos restantes
+    
             return $usuario;
-        }
-        else{
+        } else {
             return null;
         }
-    } 
+    }
+    
 
     /**
      * Obtiene todos los usuarios de la tabla usuarios
