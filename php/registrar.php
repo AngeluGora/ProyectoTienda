@@ -87,7 +87,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 </head>
 <body>
     <header>
-        <img src="img/logo.png" alt="Logo de la web" class="logo">
+        <img src="../img/logo.png" alt="Logo de la web" class="logo">
         <nav class="menu">
             <a href="index.php" class="enlaceMenu">Anuncios</a>
             <a href="php/misAnuncios.php" class="enlaceMenu">Mis Anuncios</a>
@@ -97,12 +97,8 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
             <span class="emailUsuario"><?= $_SESSION['email'] ?></span>
             <a href="php/logout.php">Cerrar sesión</a>
             <?php else: ?>
-            <form action="php/login.php" method="post">
-            <input type="email" name="email" placeholder="email">
-            <input type="password" name="password" placeholder="password">
-            <input type="submit" value="login">
-            </form>
-            <a href="php/registrar.php">Registrar</a>
+            <a href="inicioSesion.php" class="enlaceMenu">Iniciar Sesion</a>
+            <a href="registrar.php" class="enlaceMenu">Registrar</a>
             <?php endif; ?>
             </div>
         </nav>

@@ -107,12 +107,8 @@ $totalPaginas = $anunciosData['totalPages'];
             <span class="emailUsuario"><?= $_SESSION['email'] ?></span>
             <a href="php/logout.php">Cerrar sesión</a>
             <?php else: ?>
-            <form action="php/login.php" method="post">
-            <input type="email" name="email" placeholder="email">
-            <input type="password" name="password" placeholder="password">
-            <input type="submit" value="login">
-            </form>
-            <a href="php/registrar.php">Registrar</a>
+            <a href="php/inicioSesion.php" class="enlaceMenu">Iniciar Sesion</a>
+            <a href="php/registrar.php" class="enlaceMenu">Registrar</a>
             <?php endif; ?>
             </div>
         </nav>

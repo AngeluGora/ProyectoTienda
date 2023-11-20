@@ -1,121 +1,188 @@
- *{
-    margin:0;
+* {
+    margin: 0;
     padding: 0;
     box-sizing: border-box;
-} 
-
-body {
+  }
+  
+  body {
     max-width: 90%;
     padding: 0;
     margin: 0 auto;
-    background-color: rgb(254, 215, 179); 
-}
-.contenido{
+    background-color: #f8f8f8;
+    font-family: Arial, sans-serif;
+    color: #333;
+  }
+  
+  .contenido {
     margin: 0 auto;
-    padding:0;
-    background-color: #ffbd87; 
-}
-header{
+    padding: 0;
+    background-color: #eaeaea;
+  }
+  
+  header {
     padding: 2% 0;
-}
-.logo {
+    background-color: #f8f8f8;
+  }
+  
+  .logo {
     margin: 3% auto;
     display: block;
-}
-
-.menu {
-    border-top: 1px solid #000;
-    border-bottom: 1px solid #000;
+  }
+  
+  .menu {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    background-color: #f2f2f2;
     padding: 10px 0;
     overflow: hidden;
-}
-
-.menu a {
+  }
+  
+  .menu a {
     text-decoration: none;
     color: #000;
+  }
+  
+  .menu a:hover {
+    color: #333; 
+  }
+  .menu a:link {
+    color: #000;
+  }
+  
+  #enlaceform .enlaceMenu {
+    display: inline-block;
+    margin-left: 10px; /* Espacio entre enlaces */
+    margin-top: 1%;
+    margin-bottom: 1%;
 }
-.enlaceMenu:hover {
-    color: #616161;
-}
-.enlaceMenu {
+  .enlaceMenu {
     text-decoration: none;
     display: inline-block;
     margin-left: 2%;
     margin-top: 1%;
     margin-bottom: 1%;
-}
-
-#enlaceform {
-    float: right; /* Alineación a la derecha */
+  }
+  
+  #enlaceform {
+    float: right;
     margin-top: 1%;
     margin-right: 2%;
-}
-
-#enlaceform form {
-    margin-right: 10px; /* Espacio entre el formulario y el enlace 'Registrar' */
-    display: inline-block; /* Hace que el formulario sea un elemento en línea */
-}
-
-#enlaceform a {
-    display: inline-block; /* Hace que el enlace sea un elemento en línea */
-    text-align: right; /* Alineación a la derecha */
-}
-
-h1{
+  }
+  
+  #enlaceform form {
+    margin-right: 10px;
+    display: inline-block;
+  }
+  
+  #enlaceform a {
+    display: inline-block;
+    text-align: right;
+  }
+  
+  h1 {
     text-align: center;
-}
-
-h3{
+  }
+  
+  h3 {
     margin-left: 2%;
-}
-.contenedorAnuncios {
+  }
+  
+  .contenedorAnuncios {
     margin: 1%;
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* Espacio entre anuncios */
-}
-
-.anuncio {
-    width: calc(33.33% - 20px); /* 33.33% del ancho del contenedor con espacio entre anuncios */
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
+    gap: 20px;
+  }
+  
+  .anuncio {
+    width: calc(33.33% - 20px);
+    background-color: #f9f7ff;
+    border: 1px solid #625770;
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
-    box-sizing: border-box; /* Incluye el padding y borde en el ancho total */
+    box-sizing: border-box;
     position: relative;
-}
-
-.acciones {
+  }
+  
+  .acciones {
     position: absolute;
     top: 10px;
     right: 10px;
-}
-
-.anuncio img {
-    max-width: 100%; /* Tamaño máximo del ancho de la imagen */
-    height: auto; /* Altura automática para mantener la proporción */
-    display: block; /* Evita espacios debajo de la imagen */
+  }
+  
+  .anuncio img {
+    max-width: 100%;
+    height: auto;
+    display: block;
     margin: 0 auto;
-}
-
-.anuncio h4 {
+  }
+  
+  .anuncio h4 {
     font-size: 1.4em;
     margin-bottom: 10px;
     text-decoration: none;
-}
-.anuncio h4 a {
-    color: #000;
+  }
+  
+  .anuncio h4 a {
+    color: #333;
     text-decoration: none;
-}
-.anuncio p {
+  }
+  
+  .anuncio p {
     font-size: 1em;
     margin-bottom: 15px;
     text-decoration: none;
-}
-
-.anuncio .precio {
+  }
+  
+  .anuncio .precio {
     font-size: 1.2em;
     font-weight: bold;
     color: #ff6d00;
+  }
+  
+
+  .container {
+    margin: auto;
+    width: 100%;
+    max-width: 400px; /* Ancho máximo del formulario */
+}
+
+.form-background {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+input {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    width: calc(100% - 20px); /* Ancho del input considerando el padding */
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    background: #3897f0;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.login a {
+    color: #3897f0;
 }
