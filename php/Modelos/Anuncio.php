@@ -4,9 +4,9 @@ class Anuncio {
     private $titulo;
     private $descripcion;
     private $fechaPubli;
-    private $foto;
     private $idUsuario;
     private $precio;
+    private $idFoto;
     
 
     
@@ -67,24 +67,6 @@ class Anuncio {
     }
 
     /**
-     * Get the value of foto
-     */
-    public function getFoto()
-    {
-        return $this->foto;
-    }
-
-    /**
-     * Set the value of foto
-     */
-    public function setFoto($foto): self
-    {
-        $this->foto = $foto;
-
-        return $this;
-    }
-
-    /**
      * Get the value of idUsuario
      */
     public function getIdUsuario()
@@ -134,6 +116,24 @@ class Anuncio {
     public function setPrecio($precio): self
     {
         $this->precio = $precio;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of idFoto
+     */
+    public function getIdFoto()
+    {
+        return $this->idFoto;
+    }
+
+    /**
+     * Set the value of idFoto
+     */
+    public function setIdFoto($idFoto): self
+    {
+        $this->idFoto = $idFoto;
 
         return $this;
     }

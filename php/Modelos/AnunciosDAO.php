@@ -103,7 +103,7 @@ class AnunciosDAO{
      * @return idAnuncio Devuelve el id autonumérico que se le ha asignado al anuncio o false en caso de error
      */
     function insert(Anuncio $anuncio): int|bool {
-        if (!$stmt = $this->conn->prepare("INSERT INTO anuncios (titulo, descripcion, precio, fechaPublicacion, foto, idUsuario) VALUES (?, ?, ?, ?, ?, ?)")) {
+        if (!$stmt = $this->conn->prepare("INSERT INTO anuncios (titulo, descripcion, precio, fechaPublicacion, idUsuario, idFoto) VALUES (?, ?, ?, ?, ?, ?)")) {
             die("Error al preparar la consulta insert: " . $this->conn->error);
         }
         
@@ -111,11 +111,10 @@ class AnunciosDAO{
         $descripcion = $anuncio->getDescripcion();
         $precio = $anuncio->getPrecio();
         $fechaPubli = $anuncio->getFechaPubli(); // Asegúrate de que aquí esté llamando al método correcto de la clase Anuncio
-        $foto = $anuncio->getFoto();
+        $idFoto = $anuncio->getIdFoto();
         $idUsuario = $anuncio->getIdUsuario();
         
-        // Especifíca el tipo de datos para la fecha y hora: 'ssdsss'
-        $stmt->bind_param('ssdssi', $titulo, $descripcion, $precio, $fechaPubli, $foto, $idUsuario);
+        $stmt->bind_param('ssdsii', $titulo, $descripcion, $precio, $fechaPubli, $idUsuario, $idFoto);
         
         if ($stmt->execute()) {
             return $stmt->insert_id;
@@ -128,7 +127,7 @@ class AnunciosDAO{
      * 
      */
     function update($anuncio){
-        if(!$stmt = $this->conn->prepare("UPDATE anuncios SET titulo=?, descripcion=?, precio=?, fechaPublicacion=?, foto=?, idUsuario=? WHERE id=?")){
+        if(!$stmt = $this->conn->prepare("UPDATE anuncios SET titulo=?, descripcion=?, precio=?, fechaPublicacion=?, idUsuario=?, idFoto=? WHERE id=?")){
             die("Error al preparar la consulta update: " . $this->conn->error );
         }
         $id = $anuncio->getId();
@@ -136,9 +135,9 @@ class AnunciosDAO{
         $descripcion = $anuncio->getDescripcion();
         $precio = $anuncio->getPrecio();
         $fechaPubli = $anuncio->getFechaPubli();
-        $foto = $anuncio->getFoto();
+        $idFoto = $anuncio->getIdFoto();
         $idUsuario = $anuncio->getIdUsuario();
-        $stmt->bind_param('ssdssii', $titulo, $descripcion, $precio, $fechaPubli, $foto, $idUsuario, $id);
+        $stmt->bind_param('ssdsiii', $titulo, $descripcion, $precio, $fechaPubli, $idUsuario, $idFoto, $id);
         return $stmt->execute();
     }
     

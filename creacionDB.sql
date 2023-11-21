@@ -10,15 +10,27 @@ CREATE TABLE usuarios (
     sid VARCHAR(200) NOT NULL
 );
 
--- Crear la tabla "anuncios" con id autoincremental, nombre y precio not null
+CREATE TABLE fotos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(250) NOT NULL,
+    fotoPrincipal BOOLEAN,
+);
+
 CREATE TABLE anuncios (
     id INT PRIMARY KEY AUTO_INCREMENT,
     titulo VARCHAR(255) NOT NULL,
     descripcion TEXT,
     precio DECIMAL(10, 2) NOT NULL,
-    fechaHoraPublicacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Nuevo campo
-    foto VARCHAR(255),
+    fechaPublicacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
     idUsuario INT,
-    FOREIGN KEY (idUsuario) REFERENCES usuarios(id)
+    idFoto INT,
+    FOREIGN KEY (idUsuario) REFERENCES usuarios(id),
+    FOREIGN KEY (idFoto) REFERENCES fotos(id)
 );
+
+ALTER TABLE fotos
+ADD COLUMN idAnuncio INT,
+ADD FOREIGN KEY (idAnuncio) REFERENCES anuncios(id);
+
+
 

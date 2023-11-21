@@ -28,7 +28,9 @@
     margin: 3% auto;
     display: block;
   }
-  
+  .fotoUsuario{
+    width:150px;
+  }
   .menu {
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
@@ -103,6 +105,16 @@
     margin-bottom: 20px;
     box-sizing: border-box;
     position: relative;
+  }
+  #anuncioUnico{
+    min-width: 60%;
+    max-width: 80%;
+    margin: 2% auto;
+    background-color: #f9f7ff;
+    border: 1px solid #625770;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
   }
   
   .acciones {

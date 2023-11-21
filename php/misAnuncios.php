@@ -39,85 +39,17 @@ $anuncios = $anunciosDAO->getAll();
     <title>Mis Anuncios</title>
     </style>
 </head>
-<style>
-    .anuncio{
-        margin: 30px auto;
-        padding:5px;
-        border:1px solid black;
-        width: 80%;
-        position: relative;
-    }
-    .nuevoAnuncio{
-        margin: 30px auto;
-        padding:5px;
-        border:1px solid black;
-        width: 80%;
-        background-color: #00f;        
-        color:white;
-        display: block;
-        text-align: center;
-        text-decoration: none;
-    }
-    .titulo{
-        font-size: 2em;
-    }
-    .texto{
-        font-size: 1.5em;
-    }
-    .icono_borrar{
-        top: 5px;
-        right: 5px;
-        position: absolute;
-    }
-    .icono_editar{
-        top: 5px;
-        right: 25px;
-        position: absolute;
-    }
-    .color_gris:hover{
-        color:black;
-    }
-    .color_gris{
-        color:#aaa;
-    }
-
-    .error{
-        color:red;
-        display: block;
-        padding: 5px;
-        margin: auto;
-        width: 80%;
-        border: 1px solid red;
-        text-align: center;
-        margin-top: 20px;
-
-    }
-    .fotoUsuario{
-        height: 50px;;
-    }
-    header{
-        margin: 0px auto;
-        padding:5px;
-        border:1px solid black;
-        width: 80%;
-        position: relative;
-        height: 140px;
-    }
-    .tituloPagina{
-        text-align: center;
-    }
-    </style>
     <script>
     function confirmarBorrado(id) {
         if (confirm('¿Estás seguro de que quieres borrar este anuncio?')) {
-            window.location.href = `php/borrar_anuncio.php?id=${id}`;
+            window.location.href = `borrar_anuncio.php?id=${id}`;
         } else {
             // No hacer nada o mostrar un mensaje de cancelación
         }
     }
 </script>
 <body>
-    <header>
+<header>
         <img src="../img/logo.png" alt="Logo de la web" class="logo">
         <nav class="menu">
             <a href="../index.php" class="enlaceMenu">Anuncios</a>
@@ -126,14 +58,10 @@ $anuncios = $anunciosDAO->getAll();
             <?php if(isset($_SESSION['email'])): ?>
             <img src="fotosUsuarios/<?= $_SESSION['foto']?>" class="fotoUsuario">
             <span class="emailUsuario"><?= $_SESSION['email'] ?></span>
-            <a href="php/logout.php">Cerrar sesión</a>
+            <a href="logout.php">Cerrar sesión</a>
             <?php else: ?>
-            <form action="php/login.php" method="post">
-            <input type="email" name="email" placeholder="email">
-            <input type="password" name="password" placeholder="password">
-            <input type="submit" value="login">
-            </form>
-            <a href="registrar.php">Registrar</a>
+            <a href="inicioSesion.php" class="enlaceMenu">Iniciar Sesion</a>
+            <a href="registrar.php" class="enlaceMenu">Registrar</a>
             <?php endif; ?>
             </div>
         </nav>
@@ -142,26 +70,25 @@ $anuncios = $anunciosDAO->getAll();
         <h1>Bienvenido a "Mis Anuncios"</h1>
         <h3>Aqui puedes crear, ver, editar y modificar tus anuncios.</3>
         <?php if (function_exists('imprimirAnuncio')): ?>
-        <?php imprimirAnuncio(); ?>
-        <?php foreach ($anuncios as $anuncio): ?>
-        
-        <?php if(isset($_SESSION['email']) && $_SESSION['id'] == $anuncio->getIdUsuario()): ?>
-        <article class="anuncio">
-        <h4 class="titulo"><a href="php/ver_anuncio.php?id=<?=$anuncio->getId()?>"><?= $anuncio->getTitulo() ?></a></h4>
-        <img src="./fotoAnuncios/<?=$anuncio->getFoto()?>" alt="Foto del anuncio">
-        <p class="descripcion"><?= $anuncio->getDescripcion() ?></p>
-        <p class="precio"><?= $anuncio->getPrecio()?></p>
-        </article>
+            <?php imprimirAnuncio(); ?>
+            <?php foreach ($anuncios as $anuncio): ?>
+                <?php if(isset($_SESSION['email']) && $_SESSION['id'] == $anuncio->getIdUsuario()): ?>
+                    <article class="anuncio">
+                    <h4 class="titulo"><a href="ver_anuncio.php?id=<?=$anuncio->getId()?>"><?= $anuncio->getTitulo() ?></a></h4>
+                    <img src="fotoAnuncios/<?=$anuncio->getFoto()?>" alt="Foto del anuncio">
+                    <p class="descripcion"><?= $anuncio->getDescripcion() ?></p>
+                    <p class="precio"><?= $anuncio->getPrecio()?></p>
+                    </article>
+                <?php endif; ?>
+            <?php endforeach; ?>
+            <?php if(isset($_SESSION['email'])): ?>
+                <a href="insertar_anuncio.php" class="nuevoAnuncio">Nuevo Anuncio</a>
+            <?php else :?>
+                <p>Tienes que iniciar sesion para ver tus anuncios</p>
+            <?php endif; ?>
+        <?php else: ?>
+            <p>No hay anuncios disponibles.</p>
         <?php endif; ?>
-        
-    
-    <?php endforeach; ?>
-    <?php if(isset($_SESSION['email'])): ?>
-        <a href="php/insertar_anuncio.php" class="nuevoAnuncio">Nuevo Anuncio</a>
-    <?php endif; ?>
-    <?php else: ?>
-        <p>No hay anuncios disponibles.</p>
-    <?php endif; ?>
 
     </main>
     <script>
