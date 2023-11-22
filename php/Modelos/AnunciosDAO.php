@@ -103,7 +103,7 @@ class AnunciosDAO{
      * @return idAnuncio Devuelve el id autonumérico que se le ha asignado al anuncio o false en caso de error
      */
     function insert(Anuncio $anuncio): int|bool {
-        if (!$stmt = $this->conn->prepare("INSERT INTO anuncios (titulo, descripcion, precio, fechaPublicacion, idUsuario, idFoto) VALUES (?, ?, ?, ?, ?, ?)")) {
+        if (!$stmt = $this->conn->prepare("INSERT INTO anuncios (titulo, descripcion, precio, fechaPublicacion, idUsuario) VALUES ( ?, ?, ?, ?, ?)")) {
             die("Error al preparar la consulta insert: " . $this->conn->error);
         }
         
@@ -111,10 +111,10 @@ class AnunciosDAO{
         $descripcion = $anuncio->getDescripcion();
         $precio = $anuncio->getPrecio();
         $fechaPubli = $anuncio->getFechaPubli(); // Asegúrate de que aquí esté llamando al método correcto de la clase Anuncio
-        $idFoto = $anuncio->getIdFoto();
+        //$idFoto = $anuncio->getIdFoto();$idFoto
         $idUsuario = $anuncio->getIdUsuario();
         
-        $stmt->bind_param('ssdsii', $titulo, $descripcion, $precio, $fechaPubli, $idUsuario, $idFoto);
+        $stmt->bind_param('ssdsii', $titulo, $descripcion, $precio, $fechaPubli, $idUsuario);
         
         if ($stmt->execute()) {
             return $stmt->insert_id;

@@ -49,4 +49,22 @@ class FotosDAO{
         
     }
 
+    function insert(Foto $foto): int|bool {
+        if (!$stmt = $this->conn->prepare("INSERT INTO fotos (nombre, fotoPrincipal) VALUES (?, ?)")) {
+            die("Error al preparar la consulta insert: " . $this->conn->error);
+        }
+        
+        $nombre = $foto->getNombre();
+        $fotoPrincipal = $foto->getFotoPrincipal();
+        //$idAnuncio = $foto->getIdAnuncio();, $idAnuncio
+        
+        $stmt->bind_param('si', $nombre, $fotoPrincipal);
+        
+        if ($stmt->execute()) {
+            return $stmt->insert_id;
+        } else {
+            return false;
+        }
+    }
+
 }

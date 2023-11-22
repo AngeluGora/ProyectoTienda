@@ -63,6 +63,12 @@
                     die("Error al copiar la foto a la carpeta fotosAnuncios");
                 }
             }
+                $fotosDAO= new FotosDAO($coon);
+                $f-> setNombre($foto);
+                $f-> setFotoPrincipal("true");
+                $f-> setIdAnuncio();
+                $fotosDAO->insert($f);
+                
                 $anunciosDAO = new AnunciosDAO($conn);
                 $anuncio = new Anuncio();
                 $anuncio->setTitulo($titulo);
@@ -73,7 +79,7 @@
                 $fechaHoraActual = date("Y-m-d H:i:s");
             
                 $anuncio->setFechaPubli($fechaHoraActual);
-                $anuncio->setFoto($foto);
+                $anuncio->setIdFoto();
                 $anuncio->setPrecio($precio);
                 $anunciosDAO->insert($anuncio);
                 header('location: ../index.php');
@@ -94,22 +100,22 @@
 
     <body>
     <header>
-        <img src="img/logo.png" alt="Logo de la web" class="logo">
+        <img src="../img/logo.png" alt="Logo de la web" class="logo">
         <nav class="menu">
-            <a href="index.php" class="enlaceMenu">Anuncios</a>
-            <a href="php/misAnuncios.php" class="enlaceMenu">Mis Anuncios</a>
+            <a href="../index.php" class="enlaceMenu">Anuncios</a>
+            <a href="misAnuncios.php" class="enlaceMenu">Mis Anuncios</a>
             <div id="enlaceform">
             <?php if(isset($_SESSION['email'])): ?>
             <img src="fotosUsuarios/<?= $_SESSION['foto']?>" class="fotoUsuario">
             <span class="emailUsuario"><?= $_SESSION['email'] ?></span>
-            <a href="php/logout.php">Cerrar sesión</a>
+            <a href="logout.php">Cerrar sesión</a>
             <?php else: ?>
-            <form action="php/login.php" method="post">
+            <form action="login.php" method="post">
             <input type="email" name="email" placeholder="email">
             <input type="password" name="password" placeholder="password">
             <input type="submit" value="login">
             </form>
-            <a href="php/registrar.php">Registrar</a>
+            <a href="registrar.php">Registrar</a>
             <?php endif; ?>
             </div>
         </nav>
@@ -120,12 +126,9 @@
             <textarea name="descripcion" placeholder="Descripcion"></textarea><br>
             <input type="number" step="0.01" name="precio" placeholder="Precio" min="0.01" ><br>
             <input type="file" name="foto" accept="image/jpeg, image/gif, image/webp, image/png"><br>
-            <!-- Código del desplegable si es necesario -->
-            <!--<select name="idUsuario">
                 <?php foreach($usuarios as $usuario): ?>
                     <option value="<?= $usuario->getId() ?>"><?= $usuario->getEmail() ?></option>
                 <?php endforeach; ?>
-            </select><br>-->
             <input type="submit">
         </form>
     </body>

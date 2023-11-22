@@ -3,7 +3,7 @@ class Foto {
     private $id;
     private $nombre;
     private $fotoPrincipal;
-
+    private $idAnuncio;
     
 
     /**
@@ -56,6 +56,24 @@ class Foto {
     public function setFotoPrincipal($fotoPrincipal): self
     {
         $this->fotoPrincipal = $fotoPrincipal;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of idAnuncio
+     */
+    public function getIdAnuncio()
+    {
+        return $this->idAnuncio;
+    }
+
+    /**
+     * Set the value of idAnuncio
+     */
+    public function setIdAnuncio($idAnuncio): self
+    {
+        $this->idAnuncio = $idAnuncio;
 
         return $this;
     }

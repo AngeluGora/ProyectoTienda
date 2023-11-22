@@ -13,7 +13,7 @@ CREATE TABLE usuarios (
 CREATE TABLE fotos (
     id INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(250) NOT NULL,
-    fotoPrincipal BOOLEAN,
+    fotoPrincipal BOOLEAN
 );
 
 CREATE TABLE anuncios (
@@ -23,9 +23,7 @@ CREATE TABLE anuncios (
     precio DECIMAL(10, 2) NOT NULL,
     fechaPublicacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
     idUsuario INT,
-    idFoto INT,
-    FOREIGN KEY (idUsuario) REFERENCES usuarios(id),
-    FOREIGN KEY (idFoto) REFERENCES fotos(id)
+    FOREIGN KEY (idUsuario) REFERENCES usuarios(id)
 );
 
 ALTER TABLE fotos

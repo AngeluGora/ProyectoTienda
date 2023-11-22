@@ -32,5 +32,5 @@ if($usuario = $usuariosDAO->getByEmail($email)){
     }
 }
 //email o password incorrectos, redirigir a index.php
-guardarMensaje("Email o password incorrectos");
+guardarAnuncio("Email o password incorrectos");
 header('location: ../index.php');
