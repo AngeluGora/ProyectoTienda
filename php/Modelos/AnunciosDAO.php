@@ -110,14 +110,14 @@ class AnunciosDAO{
         $titulo = $anuncio->getTitulo();
         $descripcion = $anuncio->getDescripcion();
         $precio = $anuncio->getPrecio();
-        $fechaPubli = $anuncio->getFechaPubli(); // Asegúrate de que aquí esté llamando al método correcto de la clase Anuncio
-        //$idFoto = $anuncio->getIdFoto();$idFoto
+        $fechaPubli = $anuncio->getFechaPubli();
         $idUsuario = $anuncio->getIdUsuario();
         
-        $stmt->bind_param('ssdsii', $titulo, $descripcion, $precio, $fechaPubli, $idUsuario);
+        $stmt->bind_param('ssdsi', $titulo, $descripcion, $precio, $fechaPubli, $idUsuario);
         
         if ($stmt->execute()) {
-            return $stmt->insert_id;
+            $idAnuncioGenerado= $stmt->insert_id;
+            return $idAnuncioGenerado;
         } else {
             return false;
         }

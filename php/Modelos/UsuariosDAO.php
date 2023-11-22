@@ -50,10 +50,9 @@ class UsuariosDAO {
         if($result->num_rows >= 1) {
             $row = $result->fetch_assoc();
             $usuario = new Usuario();
-            $usuario->setId($row['id']); // Asegúrate de ajustar estos nombres según tu estructura de base de datos
+            $usuario->setId($row['id']);
             $usuario->setEmail($row['email']);
-            // Otros setters con los campos restantes
-    
+            $usuario->setFoto($row['fotoUsu']);
             return $usuario;
         } else {
             return null;

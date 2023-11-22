@@ -8,6 +8,8 @@
     require_once 'Modelos/Usuario.php';
     require_once 'Modelos/UsuariosDAO.php';
     require_once 'Modelos/config.php';
+    require_once 'Modelos/Foto.php';
+    require_once 'Modelos/FotosDAO.php';
 
     //¡¡Página privada!! Esto impide que puedan ver esta página
     //si no han iniciado sesión
@@ -18,7 +20,6 @@
     }
 
     $error ='';
-    $foto = '';
 
     //Creamos la conexión utilizando la clase que hemos creado
     $conexionDB = new ConexionDB(MYSQL_USER,MYSQL_PASS,MYSQL_HOST,MYSQL_DB);
@@ -34,23 +35,20 @@
         $titulo = htmlspecialchars($_POST['titulo']);
         $descripcion =  htmlspecialchars($_POST['descripcion']);
         $precio =  htmlspecialchars($_POST['precio']);
-        
-        //$idUsuario = htmlspecialchars($_POST['idUsuario']);   //Solo necesario si queremos seleccionar usuario en el desplegable
+        $foto = $_FILES['foto']['name']; 
+
 
         //Validamos los datos
-        if(empty($titulo) || empty($descripcion)){
-            $error = "Los dos campos son obligatorios";
-        }
-        elseif(empty($foto)){
-                $error="Tiene que insertar una foto";
-            }else{
+        if(empty($titulo) || empty($descripcion) || empty($foto) || empty($precio)){
+            $error = "Los campos obligatorios son: Titulo/Descripcion/Foto/Precio";
+        }else{
             if($_FILES['foto']['type'] != 'image/jpeg' &&
             $_FILES['foto']['type'] != 'image/webp' &&
-            $_FILES['foto']['type'] != 'image/png')
-            {
+            $_FILES['foto']['type'] != 'image/png'){
+
                 $error="La foto no tiene el formato admitido, debe ser jpg, webp o png";
-            }
-            else{
+
+            }else{
                 //Calculamos un hash para el nombre del archivo
                 $foto = generarNombreArchivo($_FILES['foto']['name']);
 
@@ -63,25 +61,24 @@
                     die("Error al copiar la foto a la carpeta fotosAnuncios");
                 }
             }
-                $fotosDAO= new FotosDAO($coon);
+                $fotosDAO= new FotosDAO($conn);
+                $f=new Foto();
                 $f-> setNombre($foto);
-                $f-> setFotoPrincipal("true");
-                $f-> setIdAnuncio();
-                $fotosDAO->insert($f);
+                $f-> setFotoPrincipal(true);
+                $idFotoGenerado=$fotosDAO->insert($f);
                 
                 $anunciosDAO = new AnunciosDAO($conn);
                 $anuncio = new Anuncio();
                 $anuncio->setTitulo($titulo);
                 $anuncio->setDescripcion($descripcion);
                 $anuncio->setIdUsuario($_SESSION['id']);
-                
                 // Obtener la fecha y hora actual en formato DATETIME
                 $fechaHoraActual = date("Y-m-d H:i:s");
-            
                 $anuncio->setFechaPubli($fechaHoraActual);
-                $anuncio->setIdFoto();
                 $anuncio->setPrecio($precio);
-                $anunciosDAO->insert($anuncio);
+                $idAnuncioGenerado=$anunciosDAO->insert($anuncio);
+
+                $fotosDAO->modifyInsert($idFotoGenerado, $idAnuncioGenerado);
                 header('location: ../index.php');
                 die();
             }
