@@ -52,6 +52,25 @@ class FotosDAO{
             return false;
         }
     }
+
+    function borrarFoto($id): bool {
+        if (!$stmt = $this->conn->prepare("DELETE FROM fotos WHERE idAnuncio = ?")) {
+            echo "Error en la SQL: " . $this->conn->error;
+        }
+    
+        //Asociar las variables a las interrogaciones (parámetros)
+        $stmt->bind_param('i', $id);
+    
+        // Ejecutamos la SQL
+        $stmt->execute();
+    
+        // Comprobamos si ha borrado algún registro o no
+        if ($stmt->affected_rows == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     function insert(Foto $foto): int|bool {
         if (!$stmt = $this->conn->prepare("INSERT INTO fotos (nombre, fotoPrincipal) VALUES (?, ?)")) {
             die("Error al preparar la consulta insert: " . $this->conn->error);

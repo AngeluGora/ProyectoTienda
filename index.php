@@ -98,6 +98,7 @@ $totalPaginas = $anunciosData['totalPages'];
 </script>
 <body>
     <div class="contenido">
+        
     <header>
         <img src="img/logo.png" alt="Logo de la web" class="logo">
         <nav class="menu">

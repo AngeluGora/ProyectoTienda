@@ -56,6 +56,24 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     <title>Edita tu anuncio</title>
 </head>
 <body>
+<header>
+        <img src="img/logo.png" alt="Logo de la web" class="logo">
+        <nav class="menu">
+            <a href="index.php" class="enlaceMenu">Anuncios</a>
+            <a href="php/misAnuncios.php" class="enlaceMenu">Mis Anuncios</a>
+            <div id="enlaceform">
+            <?php if(isset($_SESSION['email'])): ?>
+            <img src="php/fotosUsuarios/<?=$fotoUsu?>" class="fotoAnuncio">
+            <span class="emailUsuario"><?= $_SESSION['email'] ?></span>
+            <a href="php/logout.php">Cerrar sesión</a>
+            <?php else: ?>
+            <a href="php/inicioSesion.php" class="enlaceMenu">Iniciar Sesion</a>
+            <a href="php/registrar.php" class="enlaceMenu">Registrar</a>
+            <?php endif; ?>
+            </div>
+        </nav>
+    </header>
+    <main>
     <?= $error ?>
     <form action="editar_anuncio.php?id=<?= $idAnuncio ?>" method="post">
         <input type="text" name="titulo" placeholder="Titulo" value="<?=$anuncio->getTitulo()?>"><br>
@@ -69,5 +87,6 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
         </select><br>
         <input type="submit">
     </form>
+    </main>
 </body>
 </html>

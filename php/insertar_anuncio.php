@@ -123,9 +123,7 @@
             <textarea name="descripcion" placeholder="Descripcion"></textarea><br>
             <input type="number" step="0.01" name="precio" placeholder="Precio" min="0.01" ><br>
             <input type="file" name="foto" accept="image/jpeg, image/gif, image/webp, image/png"><br>
-                <?php foreach($usuarios as $usuario): ?>
-                    <option value="<?= $usuario->getId() ?>"><?= $usuario->getEmail() ?></option>
-                <?php endforeach; ?>
+                
             <input type="submit">
         </form>
     </body>

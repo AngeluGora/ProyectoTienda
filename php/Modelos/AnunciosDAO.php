@@ -33,6 +33,45 @@ class AnunciosDAO{
         }
     }
 
+    public function getByIdUsuario($idUsuario, $page = 1, $perPage = 5): array {
+        // Obtener el total de anuncios para el usuario
+        $queryTotal = "SELECT COUNT(*) as total FROM anuncios WHERE idUsuario = ?";
+        $stmtTotal = $this->conn->prepare($queryTotal);
+        $stmtTotal->bind_param("i", $idUsuario);
+        $stmtTotal->execute();
+        $totalAnuncios = $stmtTotal->get_result()->fetch_assoc()['total'];
+    
+        // Calcular el total de páginas
+        $totalPages = ceil($totalAnuncios / $perPage);
+    
+        // Validar la página actual
+        if ($page < 1 || $page > $totalPages) {
+            $page = 1;
+        }
+    
+        // Calcular el offset
+        $offset = ($page - 1) * $perPage;
+    
+        // Obtener los anuncios para la página actual
+        $queryAnuncios = "SELECT * FROM anuncios WHERE idUsuario = ? ORDER BY fechaPublicacion DESC LIMIT ? OFFSET ?";
+        $stmtAnuncios = $this->conn->prepare($queryAnuncios);
+        $stmtAnuncios->bind_param("iii", $idUsuario, $perPage, $offset);
+        $stmtAnuncios->execute();
+        $result = $stmtAnuncios->get_result();
+    
+        $array_anuncios = [];
+        while ($anuncio = $result->fetch_object(Anuncio::class)) {
+            $array_anuncios[] = $anuncio;
+        }
+    
+        return [
+            'anuncios' => $array_anuncios,
+            'totalPages' => $totalPages
+        ];
+    }
+    
+    
+    
     /**
      * Obtiene todos los anuncios de la tabla anuncios
      * @return array Devuelve un array de objetos Anuncio
@@ -78,25 +117,29 @@ class AnunciosDAO{
      * Borra el anuncio de la tabla anuncios del id pasado por parámetro
      * @return true si ha borrado el anuncio y false si no lo ha borrado (por que no existia)
      */
-    function delete($id):bool{
-
-        if(!$stmt = $this->conn->prepare("DELETE FROM anuncios WHERE id = ?"))
-        {
+    function delete($id): bool {
+        // Llamada al método para borrar la foto asociada al anuncio
+        $fotosDAO = new FotosDAO($this->conn); // Supongamos que FotosDAO es la clase donde está el método borrarFoto
+        $fotosDAO->borrarFoto($id); // Llamada al método para borrar la foto
+    
+        if (!$stmt = $this->conn->prepare("DELETE FROM anuncios WHERE id = ?")) {
             echo "Error en la SQL: " . $this->conn->error;
         }
-        //Asociar las variables a las interrogaciones(parámetros)
-        $stmt->bind_param('i',$id);
-        //Ejecutamos la SQL
+    
+        //Asociar las variables a las interrogaciones (parámetros)
+        $stmt->bind_param('i', $id);
+    
+        // Ejecutamos la SQL
         $stmt->execute();
-        //Comprobamos si ha borrado algún registro o no
-        if($stmt->affected_rows==1){
+    
+        // Comprobamos si ha borrado algún registro o no
+        if ($stmt->affected_rows == 1) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
-        
     }
+    
 
     /**
      * Inserta en la base de datos el anuncio que recibe como parámetro
