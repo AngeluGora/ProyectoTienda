@@ -76,18 +76,19 @@ class FotosDAO{
             die("Error al preparar la consulta insert: " . $this->conn->error);
         }
         
-        $nombre =$foto->getNombre();
+        $nombre = $foto->getNombre();
         $fotoPrincipal = $foto->getFotoPrincipal();
-        
+    
         $stmt->bind_param('si', $nombre, $fotoPrincipal);
-        
+    
         if ($stmt->execute()) {
-            $idFotoGenerada=$stmt->insert_id;
+            $idFotoGenerada = $stmt->insert_id;
             return $idFotoGenerada;
         } else {
             return false;
         }
     }
+    
 
     function modifyInsert($id,$idAnun): int|bool{
         if(!$stmt=$this->conn->prepare("UPDATE fotos set idAnuncio=? where id=?")){

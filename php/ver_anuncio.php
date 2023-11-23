@@ -1,8 +1,9 @@
 <?php
-
+session_start();
 require_once 'Modelos/ConexionDB.php';
 require_once 'Modelos/Anuncio.php';
 require_once 'Modelos/AnunciosDAO.php';
+require_once 'Modelos/FotosDAO.php';
 require_once 'Modelos/config.php';
 
 //Creamos la conexión utilizando la clase que hemos creado
@@ -15,51 +16,79 @@ $anunciosDAO = new AnunciosDAO($conn);
 //Obtener el anuncio
 $idAnuncio = htmlspecialchars($_GET['id']);
 $anuncio = $anunciosDAO->getById($idAnuncio);
+$fotosDAO=new FotosDAO($conn);
+$fotoPrincipal = $fotosDAO->getFotoPrincipal($anuncio->getId());
+$nombreFotoP = $fotoPrincipal->getNombre();
     
+if (!isset($_SESSION['email']) && isset($_COOKIE['sid'])) {
+    $usuariosDAO = new UsuariosDAO($conn);
+    if ($usuario = $usuariosDAO->getBySid($_COOKIE['sid'])) {
+        $_SESSION['email'] = $usuario->getEmail();
+        $_SESSION['id'] = $usuario->getId();
+        $_SESSION['foto']= $usuario->getFoto();
+    }
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anuncio</title>
     <link rel="stylesheet" href="../css/estilos.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
     <div class="contenido">
-    <header>
-        <img src="../img/logo.png" alt="Logo de la web" class="logo">
-        <nav class="menu">
-            <a href="../index.php" class="enlaceMenu">Anuncios</a>
-            <a href="misAnuncios.php" class="enlaceMenu">Mis Anuncios</a>
-            <div id="enlaceform">
-            <?php if(isset($_SESSION['email'])): ?>
-            <img src="fotosUsuarios/<?= $_SESSION['foto']?>" class="fotoUsuario">
-            <span class="emailUsuario"><?= $_SESSION['email'] ?></span>
-            <a href="logout.php">Cerrar sesión</a>
-            <?php else: ?>
-            <a href="inicioSesion.php" class="enlaceMenu">Iniciar Sesion</a>
-            <a href="registrar.php" class="enlaceMenu">Registrar</a>
-            <?php endif; ?>
-            </div>
-        </nav>
-    </header>
+        <header>
+            <img src="../img/logo.png" alt="Logo de la web" class="logo">
+            <nav class="menu">
+                <a href="../index.php" class="enlaceMenu">Anuncios</a>
+                <a href="misAnuncios.php" class="enlaceMenu">Mis Anuncios</a>
+                <div id="enlaceform">
+                    <?php if(isset($_SESSION['email'])): ?>
+                    <span class="emailUsuario"><?= $_SESSION['email'] ?></span>
+                    <a href="logout.php">Cerrar sesión</a>
+                    <?php else: ?>
+                    <a href="inicioSesion.php" class="enlaceMenu">Iniciar Sesion</a>
+                    <a href="registrar.php" class="enlaceMenu">Registrar</a>
+                    <?php endif; ?>
+                </div>
+            </nav>
+        </header>
 
         <main>
-        <div class="anuncio" id="anuncioUnico">
-            <?php if( $anuncio!= null): ?>
-            <div><img src="fotosAnuncios/<?= $anuncio->getFoto()?>"></div>
-            <div class="titulo"><?= $anuncio->getTitulo() ?> </div>
-            <div class="descripcion"><?= $anuncio->getDescripcion() ?> </div>
-            <div class="fecha"><?= $anuncio->getFechaPubli() ?> </div>
-            <?php else: ?>
-            <strong>Mensaje con id <?= $id ?> no encontrado</strong>
-            <?php endif; ?>
-            <br><br><br>
-            <a href="../index.php">Volver al listado de mensajes</a>
-        </div>
+            <article class="anuncio" id="anuncioUnico">
+                <?php if( $anuncio!= null): ?>
+                <div class="acciones">
+                    <?php if(isset($_SESSION['email']) && $_SESSION['id'] == $anuncio->getIdUsuario()): ?>
+                    <span class="icono_borrar">
+                        <a onclick="confirmarBorrado(<?= $anuncio->getId() ?>)">
+                            <i class="fa-solid fa-trash color_gris"></i>
+                        </a>
+                    </span>
+                    <span class="icono_editar">
+                        <a href="php/editar_anuncio.php?id=<?= $anuncio->getId() ?>">
+                            <i class="fa-solid fa-pen-to-square color_gris"></i>
+                        </a>
+                    </span>
+                    <?php endif; ?>
+                </div>
+                <img src="fotosAnuncios/<?= $nombreFotoP?>" class="fotoAnuncio">
+                <h4 class="titulo"><?= $anuncio->getTitulo() ?></h4>
+                <p class="descripcion"><?= $anuncio->getDescripcion() ?></p>
+                <p class="precio"><?= $anuncio->getPrecio() ?></p>
+                <?php else: ?>
+                <strong>Mensaje con id <?= $id ?> no encontrado</strong>
+                <?php endif; ?>
+                <br><br><br>
+                <a href="../index.php">Volver al listado de mensajes</a>
+            </article>
         </main>
 
         <footer>
@@ -67,4 +96,5 @@ $anuncio = $anunciosDAO->getById($idAnuncio);
         </footer>
     </div>
 </body>
+
 </html>

@@ -16,7 +16,7 @@ if (!isset($_SESSION['email']) && isset($_COOKIE['sid'])) {
     if ($usuario = $usuariosDAO->getBySid($_COOKIE['sid'])) {
         $_SESSION['email'] = $usuario->getEmail();
         $_SESSION['id'] = $usuario->getId();
-        $fotoUsu = $usuario->getFoto();
+        $_SESSION['foto']= $usuario->getFoto();
     }
 }
 
@@ -106,7 +106,7 @@ $totalPaginas = $anunciosData['totalPages'];
             <a href="php/misAnuncios.php" class="enlaceMenu">Mis Anuncios</a>
             <div id="enlaceform">
             <?php if(isset($_SESSION['email'])): ?>
-            <img src="php/fotosUsuarios/<?=$fotoUsu?>" class="fotoAnuncio">
+            <!--<img src="php/fotosUsuarios/<?=$_SESSION['foto']?>" class="fotoAnuncio">-->
             <span class="emailUsuario"><?= $_SESSION['email'] ?></span>
             <a href="php/logout.php">Cerrar sesión</a>
             <?php else: ?>
