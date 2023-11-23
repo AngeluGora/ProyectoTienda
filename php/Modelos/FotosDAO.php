@@ -39,6 +39,36 @@ class FotosDAO{
         }
     }
 
+    public function getFotosNoPrincipales($idAnuncio): array {
+        $fotos = [];
+    
+        if (!$stmt = $this->conn->prepare("SELECT * FROM fotos WHERE idAnuncio = ? AND fotoPrincipal = 0")) {
+            echo "Error en la SQL: " . $this->conn->error;
+            return [];
+        } else {
+            // Asignar el idAnuncio como parámetro y ejecutar la consulta
+            $stmt->bind_param("i", $idAnuncio);
+            $stmt->execute();
+    
+            // Obtener el resultado y procesar los datos de las fotos no principales
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $foto = new Foto();
+                $foto->setId($row['id']);
+                $foto->setNombre($row['nombre']);
+                $foto->setFotoPrincipal($row['fotoPrincipal']);
+                $foto->setIdAnuncio($row['idAnuncio']);
+    
+                $fotos[] = $foto;
+            }
+    
+            // Cerrar la consulta
+            $stmt->close();
+        }
+    
+        return $fotos;
+    }
+    
     function borrarFotoAnuncio($idAnun):  int|bool {
         if (!$stmt = $this->conn->prepare("DELETE FROM fotos WHERE idAnuncio = ?")) {
             die("Error al preparar la consulta delete: " . $this->conn->error);

@@ -19,7 +19,9 @@ $anuncio = $anunciosDAO->getById($idAnuncio);
 $fotosDAO=new FotosDAO($conn);
 $fotoPrincipal = $fotosDAO->getFotoPrincipal($anuncio->getId());
 $nombreFotoP = $fotoPrincipal->getNombre();
-    
+
+$fotosNoPrincipales = $fotosDAO->getFotosNoPrincipales($anuncio->getId());
+
 if (!isset($_SESSION['email']) && isset($_COOKIE['sid'])) {
     $usuariosDAO = new UsuariosDAO($conn);
     if ($usuario = $usuariosDAO->getBySid($_COOKIE['sid'])) {
@@ -38,11 +40,16 @@ if (!isset($_SESSION['email']) && isset($_COOKIE['sid'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anuncio</title>
     <link rel="stylesheet" href="../css/estilos.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-
+<script>
+    function confirmarBorrado(id) {
+        if (confirm('¿Estás seguro de que quieres borrar este anuncio?')) {
+            window.location.href = `borrar_anuncio.php?id=${id}`;
+        } else {
+            // No hacer nada o mostrar un mensaje de cancelación
+        }
+    }
+</script>
 <body>
     <div class="contenido">
         <header>
@@ -65,24 +72,19 @@ if (!isset($_SESSION['email']) && isset($_COOKIE['sid'])) {
         <main>
             <article class="anuncio" id="anuncioUnico">
                 <?php if( $anuncio!= null): ?>
-                <div class="acciones">
-                    <?php if(isset($_SESSION['email']) && $_SESSION['id'] == $anuncio->getIdUsuario()): ?>
-                    <span class="icono_borrar">
-                        <a onclick="confirmarBorrado(<?= $anuncio->getId() ?>)">
-                            <i class="fa-solid fa-trash color_gris"></i>
-                        </a>
-                    </span>
-                    <span class="icono_editar">
-                        <a href="php/editar_anuncio.php?id=<?= $anuncio->getId() ?>">
-                            <i class="fa-solid fa-pen-to-square color_gris"></i>
-                        </a>
-                    </span>
-                    <?php endif; ?>
-                </div>
                 <img src="fotosAnuncios/<?= $nombreFotoP?>" class="fotoAnuncio">
                 <h4 class="titulo"><?= $anuncio->getTitulo() ?></h4>
                 <p class="descripcion"><?= $anuncio->getDescripcion() ?></p>
                 <p class="precio"><?= $anuncio->getPrecio() ?></p>
+                <?php foreach ($fotosNoPrincipales as $foto): ?>
+                    <img src="fotosAnuncios/<?= $foto->getNombre() ?>" class="fotoNoPAnuncio">
+                <?php endforeach; ?>
+                <div class="acciones">
+                        <?php if (isset($_SESSION['email']) && $_SESSION['id'] == $anuncio->getIdUsuario()): ?>
+                            <button><a onclick="confirmarBorrado(<?= $anuncio->getId() ?>)">Borrar</a></button>
+                            <button><a href="editar_anuncio.php?id=<?= $anuncio->getId() ?>">Modificar</a></button>
+                        <?php endif; ?>
+                    </div>
                 <?php else: ?>
                 <strong>Mensaje con id <?= $id ?> no encontrado</strong>
                 <?php endif; ?>

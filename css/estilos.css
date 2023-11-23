@@ -118,22 +118,55 @@
   }
   
   .acciones {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+    gap: 10px; /* Espacio entre botones */
+    margin-top: 20px; /* Espacio superior entre la sección y los botones */
+}
+  .acciones a{
+    text-decoration: none;
+    color: #000;
   }
+.acciones button {
+    display: flex;
+    align-items: center; /* Alinear elementos verticalmente */
+    gap: 5px; /* Espacio entre el texto y el icono */
+    padding: 8px 12px; /* Espaciado interno */
+    border: none; /* Eliminar borde */
+    background-color: #ccc; /* Color de fondo */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Cambiar cursor al pasar sobre el botón */
+}
+
+.acciones button:hover {
+    background-color: #ddd; /* Cambiar color de fondo al pasar sobre el botón */
+}
+
+.acciones button i {
+    font-size: 18px; /* Tamaño del icono */
+}
+
+
   
-  .anuncio img {
+  .fotoAnuncio{
+    max-width: 100%;
+    height: 50%;
+    display: block;
+    margin: 2% auto;
+  }
+
+  .fotoNoPAnuncio {
     max-width: 100%;
     height: auto;
     display: block;
-    margin: 0 auto;
+    margin: 2% auto;
   }
   
   .anuncio h4 {
     font-size: 1.4em;
     margin-bottom: 10px;
     text-decoration: none;
+    margin-top: 4%;
   }
   
   .anuncio h4 a {

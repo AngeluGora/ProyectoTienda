@@ -38,7 +38,6 @@ $totalPaginas = $anunciosData['totalPages'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="css/estilos.css">
     <title>Angelu Store</title>
     </style>
@@ -55,23 +54,6 @@ $totalPaginas = $anunciosData['totalPages'];
         text-align: center;
         text-decoration: none;
     }
-    .icono_borrar{
-        top: 5px;
-        right: 5px;
-        position: absolute;
-    }
-    .icono_editar{
-        top: 5px;
-        right: 25px;
-        position: absolute;
-    }
-    .color_gris:hover{
-        color:black;
-    }
-    .color_gris{
-        color:#aaa;
-    }
-
     .error{
         color:red;
         display: block;
@@ -82,9 +64,6 @@ $totalPaginas = $anunciosData['totalPages'];
         text-align: center;
         margin-top: 20px;
 
-    }
-    .fotoUsuario{
-        height: 50px;;
     }
     </style>
     <script>
@@ -133,26 +112,19 @@ $totalPaginas = $anunciosData['totalPages'];
                     $nombreFoto = $fotoPrincipal->getNombre();
                 ?>
                 <article class="anuncio">
-                    <div class="acciones">
-                        <?php if(isset($_SESSION['email']) && $_SESSION['id'] == $anuncio->getIdUsuario()): ?>
-                            <span class="icono_borrar">
-                                <a onclick="confirmarBorrado(<?= $anuncio->getId() ?>)">
-                                    <i class="fa-solid fa-trash color_gris"></i>
-                                </a>
-                            </span>
-                            <span class="icono_editar">
-                                <a href="php/editar_anuncio.php?id=<?= $anuncio->getId() ?>">
-                                    <i class="fa-solid fa-pen-to-square color_gris"></i>
-                                </a>
-                            </span>
-                        <?php endif; ?>
-                    </div>
                     <img src="php/fotosAnuncios/<?= $nombreFoto ?>" alt="Foto del anuncio" class="fotoAnuncio">
                     <h4 class="titulo">
-                        <a href="php/ver_anuncio.php?id=<?= $anuncio->getId() ?>"><?= $anuncio->getTitulo() ?></a>
+                        <a href="php/ver_anuncio.php?id=<?= $anuncio->getId() ?>"><?= $anuncio->getTitulo()?></a>
                     </h4>
                     <p class="descripcion"><?= $anuncio->getDescripcion() ?></p>
                     <p class="precio"><?= $anuncio->getPrecio() ?></p>
+                    <div class="acciones">
+                        <?php if (isset($_SESSION['email']) && $_SESSION['id'] == $anuncio->getIdUsuario()): ?>
+                            <button><a onclick="confirmarBorrado(<?= $anuncio->getId() ?>)">Borrar</a></button>
+                            <button><a href="php/editar_anuncio.php?id=<?= $anuncio->getId() ?>">Modificar</a></button>
+                        <?php endif; ?>
+                    </div>
+
                 </article>
             <?php endforeach; ?>
 

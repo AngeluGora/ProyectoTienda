@@ -129,6 +129,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="../css/estilos.css">
+        <script src="https://cdn.tiny.cloud/1/<tu-clave-api>/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
         <title>Inserta Anuncio</title>
     </head>
 
@@ -156,7 +157,7 @@
         <?= $error ?>
         <form action="insertar_anuncio.php" id="uploadForm" method="post" enctype="multipart/form-data">
             <input type="text" name="titulo" placeholder="Titulo"><br>
-            <textarea name="descripcion" placeholder="Descripcion"></textarea><br>
+            <textarea name="descripcion" id ="editor" placeholder="Descripcion"></textarea><br>
             <input type="number" step="0.01" name="precio" placeholder="Precio" min="0.01" ><br>
             <label for="fileInput">Selecciona la foto principal:</label>
             <input type="file" name="foto" accept="image/jpeg, image/gif, image/webp, image/png"><br>
@@ -166,6 +167,12 @@
             <div id="imageContainer"></div>
             <script src="../js/upload.js"></script>
             <input type="submit">
+
+            <script>
+            tinymce.init({
+                selector: '#editor'
+            });
+        </script>
         </form>
     </body>
     </html>
