@@ -69,38 +69,37 @@ class FotosDAO{
         return $fotos;
     }
     
-    function borrarFotoAnuncio($idAnun):  int|bool {
-        if (!$stmt = $this->conn->prepare("DELETE FROM fotos WHERE idAnuncio = ?")) {
-            die("Error al preparar la consulta delete: " . $this->conn->error);
+    function borrarFotoYAnuncio($fotoId = null, $anuncioId = null): bool {
+        // Si se proporciona $fotoId y $anuncioId, se borra la foto asociada al anuncio
+        if ($fotoId !== null && $anuncioId !== null) {
+            if (!$stmt = $this->conn->prepare("DELETE FROM fotos WHERE id = ? AND idAnuncio = ?")) {
+                die("Error al preparar la consulta delete: " . $this->conn->error);
+            }
+            $stmt->bind_param('ii', $fotoId, $anuncioId);
+        } else {
+            // Si no se proporcionan ambas IDs, borra todas las fotos relacionadas con un anuncio
+            if (!$stmt = $this->conn->prepare("DELETE FROM fotos WHERE idAnuncio = ?")) {
+                die("Error al preparar la consulta delete: " . $this->conn->error);
+            }
+            $stmt->bind_param('i', $anuncioId);
         }
-        
-        $stmt->bind_param('i', $idAnun);
-        
+    
         if ($stmt->execute()) {
-            return $stmt->affected_rows; // Retorna el número de filas afectadas
+            // Eliminar el archivo de la carpeta si $fotoId está definido
+            if ($fotoId !== null) {
+                $rutaArchivo = obtenerRutaArchivo($fotoId); // Reemplaza esto con tu lógica para obtener la ruta del archivo
+                if (file_exists($rutaArchivo)) {
+                    unlink($rutaArchivo); // Elimina el archivo físico de la carpeta
+                }
+            }
+            
+            return $stmt->affected_rows > 0;
         } else {
             return false;
         }
     }
+    
 
-    function borrarFoto($id): bool {
-        if (!$stmt = $this->conn->prepare("DELETE FROM fotos WHERE idAnuncio = ?")) {
-            echo "Error en la SQL: " . $this->conn->error;
-        }
-    
-        //Asociar las variables a las interrogaciones (parámetros)
-        $stmt->bind_param('i', $id);
-    
-        // Ejecutamos la SQL
-        $stmt->execute();
-    
-        // Comprobamos si ha borrado algún registro o no
-        if ($stmt->affected_rows == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     function insert(Foto $foto): int|bool {
         if (!$stmt = $this->conn->prepare("INSERT INTO fotos (nombre, fotoPrincipal) VALUES (?, ?)")) {
             die("Error al preparar la consulta insert: " . $this->conn->error);

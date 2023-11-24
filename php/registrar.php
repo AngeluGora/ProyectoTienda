@@ -23,6 +23,9 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     $conexionDB = new ConexionDB(MYSQL_USER,MYSQL_PASS,MYSQL_HOST,MYSQL_DB);
     $conn = $conexionDB->getConexion();
 
+    if(strlen($password) < 4){
+        $error = "La contraseña debe tener al menos 4 caracteres";
+    }
     //Compruebo que no haya un usuario registrado con el mismo email
     $usuariosDAO = new UsuariosDAO($conn);
     if($usuariosDAO->getByEmail($email) != null){
@@ -30,25 +33,27 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     }
     else{
         //Copiamos la foto al disco
-        if($_FILES['foto']['type'] != 'image/jpeg' &&
-        $_FILES['foto']['type'] != 'image/webp' &&
-        $_FILES['foto']['type'] != 'image/png')
-        {
-            $error="la foto no tiene el formato admitido, debe ser jpg o webp";
-        }
-        else{
-            //Calculamos un hash para el nombre del archivo
-            $foto = generarNombreArchivo($_FILES['foto']['name']);
-
-            //Si existe un archivo con ese nombre volvemos a calcular el hash
-            while(file_exists("fotosUsuarios/$foto")){
+       // Verificar si se ha proporcionado un archivo y si es una imagen
+        if ($_FILES['foto']['name'] !== '') {
+            if ($_FILES['foto']['type'] != 'image/jpeg' &&
+                $_FILES['foto']['type'] != 'image/webp' &&
+                $_FILES['foto']['type'] != 'image/png') {
+                $error = "La foto no tiene el formato admitido, debe ser jpg, webp o png";
+            } else {
+                // Calculamos un hash para el nombre del archivo
                 $foto = generarNombreArchivo($_FILES['foto']['name']);
-            }
-            
-            if(!move_uploaded_file($_FILES['foto']['tmp_name'], "fotosUsuarios/$foto")){
-                die("Error al copiar la foto a la carpeta fotosUsuarios");
+
+                // Si existe un archivo con ese nombre, volvemos a calcular el hash
+                while (file_exists("fotosUsuarios/$foto")) {
+                    $foto = generarNombreArchivo($_FILES['foto']['name']);
+                }
+
+                if (!move_uploaded_file($_FILES['foto']['tmp_name'], "fotosUsuarios/$foto")) {
+                    die("Error al copiar la foto a la carpeta fotosUsuarios");
+                }
             }
         }
+
         
 
         if($error == '')    //Si no hay error
@@ -89,7 +94,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     <header>
         <img src="../img/logo.png" alt="Logo de la web" class="logo">
         <nav class="menu">
-            <a href="index.php" class="enlaceMenu">Anuncios</a>
+            <a href="../index.php" class="enlaceMenu">Anuncios</a>
             <a href="misAnuncios.php" class="enlaceMenu">Mis Anuncios</a>
             <div id="enlaceform">
             <?php if(isset($_SESSION['email'])): ?>
@@ -106,12 +111,12 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     <h1>Registro</h1>
     <?= $error ?>
     <form action="registrar.php" method="post" enctype="multipart/form-data">
-        <input type="text" name="nombre" placeholder="Nombre"><br>
-        <input type="email" name="email" placeholder="Email"><br>
+        <input type="text" name="nombre" placeholder="Nombre" value="<?= isset($_POST['nombre']) ? htmlspecialchars($_POST['nombre']) : '' ?>"><br>
+        <input type="email" name="email" placeholder="Email" value="<?= isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '' ?>"><br>
         <input type="password" name="password" placeholder="Contraseña"><br>
-        <input type="text" name="telefono" placeholder="Telefono"><br>
-        <input type="text" name="poblacion" placeholder="Poblacion"><br>
-        <input type="file" name="foto" accept="image/jpeg, image/gif, image/webp, image/png" required><br>
+        <input type="text" name="telefono" placeholder="Telefono" value="<?= isset($_POST['telefono']) ? htmlspecialchars($_POST['telefono']) : '' ?>"><br>
+        <input type="text" name="poblacion" placeholder="Poblacion" value="<?= isset($_POST['poblacion']) ? htmlspecialchars($_POST['poblacion']) : '' ?>"><br>
+        <input type="file" name="foto" accept="image/jpeg, image/gif, image/webp, image/png"><br>
         <input type="submit" value="registrar">
         <a href="../index.php">volver</a>
     </form>

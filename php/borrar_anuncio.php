@@ -23,13 +23,25 @@ $idAnuncio = htmlspecialchars($_GET['id']);
 $anuncio = $anunciosDAO->getById($idAnuncio);
 
 //Comprobamos que anuncio pertenece al usuario conectado
-if($_SESSION['id']==$anuncio->getIdUsuario()){
-    $fotosDAO->borrarFotoAnuncio($idAnuncio);
-    $anunciosDAO->delete($idAnuncio);
-}
-else
-{
+if ($_SESSION['id'] === $anuncio->getIdUsuario()) {
+    // Obtener el ID del anuncio
+    $idAnuncio = $anuncio->getId();
+
+    // Eliminar las fotos relacionadas con el anuncio
+    $fotosDAO->borrarFotoYAnuncio(null, $idAnuncio);
+
+    // Eliminar el anuncio
+    if ($anunciosDAO->delete($idAnuncio)) {
+        // Anuncio eliminado con éxito
+        // Redirige o muestra un mensaje de éxito
+    } else {
+        // Error al eliminar el anuncio
+        guardarAnuncio("Error al borrar el Anuncio");
+        // Puedes redirigir o mostrar un mensaje de error
+    }
+} else {
     guardarAnuncio("No puedes borrar este Anuncio");
+    // Puedes redirigir o mostrar un mensaje informando que no tiene permisos para borrar este anuncio
 }
 
 header('location: ../index.php');

@@ -118,27 +118,28 @@ class AnunciosDAO{
      * @return true si ha borrado el anuncio y false si no lo ha borrado (por que no existia)
      */
     function delete($id): bool {
-        // Llamada al método para borrar la foto asociada al anuncio
-        $fotosDAO = new FotosDAO($this->conn); // Supongamos que FotosDAO es la clase donde está el método borrarFoto
-        $fotosDAO->borrarFoto($id); // Llamada al método para borrar la foto
+        $fotosDAO = new FotosDAO($this->conn); // Instancia de FotosDAO
+    
+        // Llamada para borrar las fotos relacionadas con el anuncio
+        $fotosDAO->borrarFotoYAnuncio(null, $id);
     
         if (!$stmt = $this->conn->prepare("DELETE FROM anuncios WHERE id = ?")) {
-            echo "Error en la SQL: " . $this->conn->error;
+            die("Error en la SQL: " . $this->conn->error);
         }
     
-        //Asociar las variables a las interrogaciones (parámetros)
         $stmt->bind_param('i', $id);
     
-        // Ejecutamos la SQL
+        // Ejecución de la consulta SQL
         $stmt->execute();
     
-        // Comprobamos si ha borrado algún registro o no
+        // Verificar si se eliminó alguna fila
         if ($stmt->affected_rows == 1) {
             return true;
         } else {
             return false;
         }
     }
+    
     
 
     /**

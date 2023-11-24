@@ -11,6 +11,7 @@ require_once 'funciones.php';
 $conexionDB = new ConexionDB(MYSQL_USER, MYSQL_PASS, MYSQL_HOST, MYSQL_DB);
 $conn = $conexionDB->getConexion();
 $fotoUsu='';
+$id='';
 $idUsuario='';
 
 if (!isset($_SESSION['email']) && isset($_COOKIE['sid'])) {
@@ -106,7 +107,6 @@ $totalPaginas = $anunciosData['totalPages'];
             <a href="misAnuncios.php" class="enlaceMenu">Mis Anuncios</a>
             <div id="enlaceform">
             <?php if(isset($_SESSION['email'])): ?>
-            <img src="fotosUsuarios/<?=$fotoUsu?>" class="fotoAnuncio">
             <span class="emailUsuario"><?= $_SESSION['email'] ?></span>
             <a href="logout.php">Cerrar sesión</a>
             <?php else: ?>
@@ -119,45 +119,35 @@ $totalPaginas = $anunciosData['totalPages'];
     <main>
         <h1>Bienvenido a "Mis Anuncios"</h1>
         <h3>Aqui puedes crear, ver, editar y modificar tus anuncios.</h3>
-        <a href="php/insertar_anuncio.php" class="nuevoAnuncio">Nuevo Anuncio</a>
+        <?php if(isset($_SESSION['email']) && isset($_SESSION['id'])): ?>
+            <a href="insertar_anuncio.php" class="nuevoAnuncio">Nuevo Anuncio</a>
             <div class="contenedorAnuncios">
-            <?php if (function_exists('imprimirAnuncio')): ?>
-            <?php imprimirAnuncio(); ?>
-            <?php endif; ?>
-            <?php foreach ($anuncios as $anuncio): ?>
-                <?php
-                    // Obtener la foto principal para el anuncio actual
-                    $fotosDAO=new FotosDAO($conn);
-                    $fotoPrincipal = $fotosDAO->getFotoPrincipal($anuncio->getId());
-                    $nombreFoto = $fotoPrincipal->getNombre();
-                ?>
-                <article class="anuncio">
-                    <div class="acciones">
-                        <?php if(isset($_SESSION['email']) && $_SESSION['id'] == $anuncio->getIdUsuario()): ?>
-                            <span class="icono_borrar">
-                                <a onclick="confirmarBorrado(<?= $anuncio->getId() ?>)">
-                                    <i class="fa-solid fa-trash color_gris"></i>
-                                </a>
-                            </span>
-                            <span class="icono_editar">
-                                <a href="php/editar_anuncio.php?id=<?= $anuncio->getId() ?>">
-                                    <i class="fa-solid fa-pen-to-square color_gris"></i>
-                                </a>
-                            </span>
-                        <?php endif; ?>
-                    </div>
-                    <img src="fotosAnuncios/<?= $nombreFoto ?>" alt="Foto del anuncio" class="fotoAnuncio">
-                    <h4 class="titulo">
-                        <a href="php/ver_anuncio.php?id=<?= $anuncio->getId() ?>"><?= $anuncio->getTitulo() ?></a>
-                    </h4>
-                    <p class="descripcion"><?= $anuncio->getDescripcion() ?></p>
-                    <p class="precio"><?= $anuncio->getPrecio() ?></p>
-                </article>
-            <?php endforeach; ?>
-
+                <?php if (function_exists('imprimirAnuncio')): ?>
+                    <?php imprimirAnuncio(); ?>
+                <?php endif; ?>
+                <?php foreach ($anuncios as $anuncio): ?>
+                    <?php
+                        // Obtener la foto principal para el anuncio actual
+                        $fotosDAO=new FotosDAO($conn);
+                        $fotoPrincipal = $fotosDAO->getFotoPrincipal($anuncio->getId());
+                        $nombreFoto = $fotoPrincipal->getNombre();
+                    ?>
+                    <article class="anuncio">
+                        <img src="fotosAnuncios/<?= $nombreFoto ?>" alt="Foto del anuncio" class="fotoAnuncio">
+                        <h4 class="titulo">
+                            <a href="ver_anuncio.php?id=<?= $anuncio->getId() ?>"><?= $anuncio->getTitulo() ?></a>
+                        </h4>
+                        <p class="descripcion"><?= $anuncio->getDescripcion() ?></p>
+                        <p class="precio"><?= $anuncio->getPrecio() ?></p>
+                        <div class="acciones">
+                            <?php if (isset($_SESSION['email']) && $_SESSION['id'] == $anuncio->getIdUsuario()): ?>
+                                <button><a onclick="confirmarBorrado(<?= $anuncio->getId() ?>)">Borrar</a></button>
+                                <button><a href="php/editar_anuncio.php?id=<?= $anuncio->getId() ?>">Modificar</a></button>
+                            <?php endif; ?>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
             </div>
-
-
             <!-- Navegación entre páginas -->
             <div class="pagination">
                 <?php if ($totalPaginas > 1): ?>
@@ -174,7 +164,9 @@ $totalPaginas = $anunciosData['totalPages'];
                     <?php endif; ?>
                 <?php endif; ?>
             </div>
-
+        <?php else: ?>
+            <p>Tienes que iniciar sesión para ver esta página</p>
+        <?php endif; ?>
     </main>
     <script>
     setTimeout(function(){document.getElementById('anuncioError').style.display='none'},5000);
