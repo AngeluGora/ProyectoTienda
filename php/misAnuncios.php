@@ -20,18 +20,25 @@ if (!isset($_SESSION['email']) && isset($_COOKIE['sid'])) {
         $_SESSION['email'] = $usuario->getEmail();
         $_SESSION['id'] = $usuario->getId();
         $fotoUsu = $usuario->getFoto();
+        
     }
 }
-
 $anunciosDAO = new AnunciosDAO($conn);
+
 // Obtener la página actual desde la URL o establecerla en 1 por defecto
 $pagina = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 
 // Obtener todos los anuncios con paginación
-$anunciosData = $anunciosDAO->getByIdUsuario($_SESSION['id'],$pagina);
+$anunciosData = $anunciosDAO->getByIdUsuario($_SESSION['id'], $pagina);
 
-$anuncios = $anunciosData['anuncios'];
-$totalPaginas = $anunciosData['totalPages'];
+// Inicializar variables para evitar errores de tipo y definición
+$anuncios = [];
+$totalPaginas = 0;
+
+if ($anunciosData) {
+    $anuncios = $anunciosData['anuncios'];
+    $totalPaginas = $anunciosData['totalPages'];
+}
 
 ?>
 <!DOCTYPE html>
@@ -60,7 +67,7 @@ $totalPaginas = $anunciosData['totalPages'];
     padding:5px;
     border:1px solid black;
     width: 80%;
-    background-color: #00f;        
+    background-color: #0083E7;        
     color:white;
     display: block;
     text-align: center;
@@ -96,8 +103,8 @@ $totalPaginas = $anunciosData['totalPages'];
         </nav>
     </header>
     <main>
-        <h1>Bienvenido a "Mis Anuncios"</h1>
-        <h3>Aqui puedes crear, ver, editar y modificar tus anuncios.</h3>
+        <h1 style="margin: 2% auto;">Bienvenido a "Mis Anuncios"</h1><br>
+        <h3>Aqui puedes crear, ver, editar y modificar tus anuncios.</h3><br>
         <?php if(isset($_SESSION['email']) && isset($_SESSION['id'])): ?>
             <a href="insertar_anuncio.php" class="nuevoAnuncio">Nuevo Anuncio</a>
             <div class="contenedorAnuncios">
@@ -106,7 +113,6 @@ $totalPaginas = $anunciosData['totalPages'];
                 <?php endif; ?>
                 <?php foreach ($anuncios as $anuncio): ?>
                     <?php
-                        // Obtener la foto principal para el anuncio actual
                         $fotosDAO=new FotosDAO($conn);
                         $fotoPrincipal = $fotosDAO->getFotoPrincipal($anuncio->getId());
                         $nombreFoto = $fotoPrincipal->getNombre();
@@ -117,7 +123,7 @@ $totalPaginas = $anunciosData['totalPages'];
                         <h4 class="titulo">
                             <p><?= $anuncio->getTitulo() ?></p>
                         </h4>
-                        <p class="descripcion"><?= $anuncio->getDescripcion() ?></p>
+                        <p class="descripcion"><?=  htmlspecialchars_decode($anuncio->getDescripcion()) ?></p>
                         <p class="precio"><?= $anuncio->getPrecio() ?></p>
                         <div class="acciones">
                             <?php if (isset($_SESSION['email']) && $_SESSION['id'] == $anuncio->getIdUsuario()): ?>
@@ -130,7 +136,7 @@ $totalPaginas = $anunciosData['totalPages'];
                 <?php endforeach; ?>
             </div>
             <!-- Navegación entre páginas -->
-            <div class="pagination">
+            <div class="paginacion">
                 <?php if ($totalPaginas > 1): ?>
                     <?php if ($pagina > 1): ?>
                         <a href="?pagina=<?php echo ($pagina - 1); ?>">Página anterior</a>
@@ -146,15 +152,16 @@ $totalPaginas = $anunciosData['totalPages'];
                 <?php endif; ?>
             </div>
         <?php else: ?>
-            <p>Tienes que iniciar sesión para ver esta página</p>
+            <p style="margin: 2% 2%;">Tienes que iniciar sesión para ver esta página</p>
         <?php endif; ?>
     </main>
     <script>
     setTimeout(function(){document.getElementById('anuncioError').style.display='none'},5000);
     
     </script>
-    <footer>
-        &copy; 2023 Angelu Store
-    </footer>
+   <footer>
+            <img src="../img/logo.png" alt="Logo de la web" class="logo">
+            <p>&copy; 2023 Angelu Store</p>
+        </footer>
 </body>
 </html>

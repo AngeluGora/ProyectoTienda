@@ -124,9 +124,9 @@
   
   .acciones {
     display: flex;
-    justify-content: center; /* Centrar horizontalmente */
-    gap: 10px; /* Espacio entre botones */
-    margin-top: 20px; /* Espacio superior entre la sección y los botones */
+    justify-content: center; 
+    gap: 10px; 
+    margin-top: 20px; 
 }
   .acciones a{
     text-decoration: none;
@@ -134,21 +134,21 @@
   }
 .acciones button {
     display: flex;
-    align-items: center; /* Alinear elementos verticalmente */
-    gap: 5px; /* Espacio entre el texto y el icono */
-    padding: 8px 12px; /* Espaciado interno */
-    border: none; /* Eliminar borde */
-    background-color: #ccc; /* Color de fondo */
-    border-radius: 5px; /* Bordes redondeados */
-    cursor: pointer; /* Cambiar cursor al pasar sobre el botón */
+    align-items: center; 
+    gap: 5px; 
+    padding: 8px 12px; 
+    border: none; 
+    background-color: #ccc; 
+    border-radius: 5px;
+    cursor: pointer; 
 }
 
 .acciones button:hover {
-    background-color: #ddd; /* Cambiar color de fondo al pasar sobre el botón */
+    background-color: #ddd; 
 }
 
 .acciones button i {
-    font-size: 18px; /* Tamaño del icono */
+    font-size: 18px; 
 }
 
 
@@ -195,7 +195,7 @@
   .container {
     margin: auto;
     width: 100%;
-    max-width: 400px; /* Ancho máximo del formulario */
+    max-width: 400px;
 }
 
 .form-background {
@@ -222,7 +222,7 @@ input {
     margin-bottom: 15px;
     padding: 10px;
     border: 1px solid #ddd;
-    width: calc(100% - 20px); /* Ancho del input considerando el padding */
+    width: calc(100% - 20px); 
     box-sizing: border-box;
 }
 
@@ -235,4 +235,17 @@ input[type="submit"] {
 
 .login a {
     color: #3897f0;
+}
+
+.paginacion {
+  text-align: center;
+  margin: 2% auto;
+  width: 40%;
+}
+
+.paginacion a {
+  text-decoration: none;
+  color: #000;
+  font-size: 1.4em;
+  margin: 0 10px;
 }

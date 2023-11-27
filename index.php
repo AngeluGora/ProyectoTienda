@@ -59,7 +59,7 @@ $totalPaginas = $anunciosData['totalPages'];
     padding:5px;
     border:1px solid black;
     width: 80%;
-    background-color: #00f;        
+    background-color: #0083E7;        
     color:white;
     display: block;
     text-align: center;
@@ -119,9 +119,9 @@ $totalPaginas = $anunciosData['totalPages'];
                         <a href="php/ver_anuncio.php?id=<?= $anuncio->getId() ?>">
                             <img src="php/fotosAnuncios/<?= $nombreFoto ?>" alt="Foto del anuncio" class="fotoAnuncio">
                             <h4 class="titulo">
-                                <p><?= htmlspecialchars_decode($anuncio->getTitulo()) ?></p>
+                                <p><?=$anuncio->getTitulo() ?></p>
                             </h4>
-                            <p class="descripcion"><?= $anuncio->getDescripcion() ?></p>
+                            <p class="descripcion"><?=  htmlspecialchars_decode($anuncio->getDescripcion())?></p>
                             <p class="precio"><?= $anuncio->getPrecio() ?></p>
                             <div class="acciones">
                                 <?php if (isset($_SESSION['email']) && $_SESSION['id'] == $anuncio->getIdUsuario()): ?>
@@ -135,10 +135,7 @@ $totalPaginas = $anunciosData['totalPages'];
                 <?php endif; ?>
             </div>
 
-
-
-            <!-- Navegación entre páginas -->
-            <div class="pagination">
+            <div class="paginacion">
                 <?php if ($totalPaginas > 1): ?>
                     <?php if ($pagina > 1): ?>
                         <a href="?pagina=<?php echo ($pagina - 1); ?>">Página anterior</a>

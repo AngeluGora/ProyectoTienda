@@ -29,38 +29,38 @@
     $usuarios = $usuariosDAO->getAll();
 
 
-    if($_SERVER['REQUEST_METHOD']=='POST'){
-        //Limpiamos los datos que vienen del usuario
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        // Limpiamos los datos que vienen del usuario
         $titulo = htmlspecialchars($_POST['titulo']);
-        $descripcion =  htmlspecialchars($_POST['descripcion']);
-        $precio =  htmlspecialchars($_POST['precio']);
+        $descripcion = htmlspecialchars($_POST['descripcion']);
+        $precio = htmlspecialchars($_POST['precio']);
         $foto = $_FILES['foto']['name']; 
     
-        // Separamos la parte entera y la decimal
-        $partes = explode(',', $precio);
-
-        if (count($partes) === 2) {
-            // La coma está presente en el precio, dividir la parte entera y decimal
-            $parte_entera = $partes[0]; // Parte entera del número
-            $parte_decimal = $partes[1]; // Parte decimal del número
-
+        // Quitamos los caracteres no numéricos y comas del precio
+        $precio = str_replace(',', '.', $precio); // Reemplazamos comas por puntos
+    
+        // Verificamos si el precio tiene puntos decimales
+        if (strpos($precio, '.') !== false) {
+            // Si hay puntos decimales, dividimos el precio en parte entera y decimal
+            list($parte_entera, $parte_decimal) = explode('.', $precio);
+    
             $longitud_entera = strlen($parte_entera); // Longitud de la parte entera
             $longitud_decimal = strlen($parte_decimal); // Longitud de la parte decimal
         } else {
-            // No se encontró una coma, considerar todo como parte entera y la parte decimal como vacía
+            // Si no hay puntos decimales, consideramos todo como parte entera y la parte decimal como vacía
             $parte_entera = $precio;
             $parte_decimal = '';
             $longitud_entera = strlen($parte_entera); // Longitud de la parte entera
             $longitud_decimal = 0; // Longitud de la parte decimal será cero
         }
-
-        //Validamos los datos
-        if (empty($titulo) || empty($descripcion) || empty($foto) || empty($precio)){
+    
+        // Validamos los datos
+        if (empty($titulo) || empty($descripcion) || empty($foto) || empty($precio)) {
             $error = "Los campos obligatorios son: Titulo/Descripcion/Foto/Precio";
-        } elseif ($longitud_entera > 7 || $longitud_decimal > 2) {
-            // El número excede la longitud permitida
+        } elseif (!is_numeric($precio) || $longitud_entera > 7 || $longitud_decimal > 2) {
+            // El número excede la longitud permitida o no es un número válido
             $error = "El precio no puede ser mayor a 9999999.99€";
-        }else{
+        } else {
             if($_FILES['foto']['type'] != 'image/jpeg' &&
             $_FILES['foto']['type'] != 'image/webp' &&
             $_FILES['foto']['type'] != 'image/png'){
