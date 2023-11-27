@@ -45,51 +45,7 @@ $totalPaginas = $anunciosData['totalPages'];
     <title>Angelu Store</title>
     </style>
 </head>
-<style>
-    .nuevoAnuncio{
-        margin: 30px auto;
-        padding:5px;
-        border:1px solid black;
-        width: 80%;
-        background-color: #00f;        
-        color:white;
-        display: block;
-        text-align: center;
-        text-decoration: none;
-    }
-    .icono_borrar{
-        top: 5px;
-        right: 5px;
-        position: absolute;
-    }
-    .icono_editar{
-        top: 5px;
-        right: 25px;
-        position: absolute;
-    }
-    .color_gris:hover{
-        color:black;
-    }
-    .color_gris{
-        color:#aaa;
-    }
-
-    .error{
-        color:red;
-        display: block;
-        padding: 5px;
-        margin: auto;
-        width: 80%;
-        border: 1px solid red;
-        text-align: center;
-        margin-top: 20px;
-
-    }
-    .fotoUsuario{
-        height: 50px;;
-    }
-    </style>
-    <script>
+<script>
     function confirmarBorrado(id) {
         if (confirm('¿Estás seguro de que quieres borrar este anuncio?')) {
             window.location.href = `borrar_anuncio.php?id=${id}`;
@@ -98,6 +54,29 @@ $totalPaginas = $anunciosData['totalPages'];
         }
     }
 </script>
+<style>
+    .nuevoAnuncio{
+    margin: 30px auto;
+    padding:5px;
+    border:1px solid black;
+    width: 80%;
+    background-color: #00f;        
+    color:white;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+}
+.error{
+    color:red;
+    display: block;
+    padding: 5px;
+    margin: auto;
+    width: 80%;
+    border: 1px solid red;
+    text-align: center;
+    margin-top: 20px;
+}
+</style>
 <body>
     <div class="contenido">
     <header>
@@ -133,9 +112,10 @@ $totalPaginas = $anunciosData['totalPages'];
                         $nombreFoto = $fotoPrincipal->getNombre();
                     ?>
                     <article class="anuncio">
+                    <a href="ver_anuncio.php?id=<?= $anuncio->getId() ?>">
                         <img src="fotosAnuncios/<?= $nombreFoto ?>" alt="Foto del anuncio" class="fotoAnuncio">
                         <h4 class="titulo">
-                            <a href="ver_anuncio.php?id=<?= $anuncio->getId() ?>"><?= $anuncio->getTitulo() ?></a>
+                            <p><?= $anuncio->getTitulo() ?></p>
                         </h4>
                         <p class="descripcion"><?= $anuncio->getDescripcion() ?></p>
                         <p class="precio"><?= $anuncio->getPrecio() ?></p>
@@ -145,6 +125,7 @@ $totalPaginas = $anunciosData['totalPages'];
                                 <button><a href="php/editar_anuncio.php?id=<?= $anuncio->getId() ?>">Modificar</a></button>
                             <?php endif; ?>
                         </div>
+                    </a>
                     </article>
                 <?php endforeach; ?>
             </div>

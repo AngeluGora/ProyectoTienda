@@ -43,32 +43,7 @@ $totalPaginas = $anunciosData['totalPages'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/estilos.css">
     <title>Angelu Store</title>
-    </style>
 </head>
-<style>
-    .nuevoAnuncio{
-        margin: 30px auto;
-        padding:5px;
-        border:1px solid black;
-        width: 80%;
-        background-color: #00f;        
-        color:white;
-        display: block;
-        text-align: center;
-        text-decoration: none;
-    }
-    .error{
-        color:red;
-        display: block;
-        padding: 5px;
-        margin: auto;
-        width: 80%;
-        border: 1px solid red;
-        text-align: center;
-        margin-top: 20px;
-
-    }
-    </style>
     <script>
     function confirmarBorrado(id) {
         if (confirm('¿Estás seguro de que quieres borrar este anuncio?')) {
@@ -78,6 +53,29 @@ $totalPaginas = $anunciosData['totalPages'];
         }
     }
 </script>
+<style>
+    .nuevoAnuncio{
+    margin: 30px auto;
+    padding:5px;
+    border:1px solid black;
+    width: 80%;
+    background-color: #00f;        
+    color:white;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+}
+.error{
+    color:red;
+    display: block;
+    padding: 5px;
+    margin: auto;
+    width: 80%;
+    border: 1px solid red;
+    text-align: center;
+    margin-top: 20px;
+}
+</style>
 <body>
     <div class="contenido">
         
@@ -118,9 +116,10 @@ $totalPaginas = $anunciosData['totalPages'];
                             $nombreFoto = ($fotoPrincipal) ? $fotoPrincipal->getNombre() : 'imagen_default.jpg'; // Si no hay foto, muestra una imagen por defecto
                         ?>
                         <article class="anuncio">
+                        <a href="php/ver_anuncio.php?id=<?= $anuncio->getId() ?>">
                             <img src="php/fotosAnuncios/<?= $nombreFoto ?>" alt="Foto del anuncio" class="fotoAnuncio">
                             <h4 class="titulo">
-                                <a href="php/ver_anuncio.php?id=<?= $anuncio->getId() ?>"><?= $anuncio->getTitulo() ?></a>
+                                <p><?= htmlspecialchars_decode($anuncio->getTitulo()) ?></p>
                             </h4>
                             <p class="descripcion"><?= $anuncio->getDescripcion() ?></p>
                             <p class="precio"><?= $anuncio->getPrecio() ?></p>
@@ -130,6 +129,7 @@ $totalPaginas = $anunciosData['totalPages'];
                                     <button><a href="php/editar_anuncio.php?id=<?= $anuncio->getId() ?>">Modificar</a></button>
                                 <?php endif; ?>
                             </div>
+                            </a>
                         </article>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -157,7 +157,8 @@ $totalPaginas = $anunciosData['totalPages'];
         </main>
 
         <footer>
-            &copy; 2023 Angelu Store
+            <img src="img/logo.png" alt="Logo de la web" class="logo">
+            <p>&copy; 2023 Angelu Store</p>
         </footer>
     </div>
 </body>

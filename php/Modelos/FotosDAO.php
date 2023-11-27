@@ -49,7 +49,7 @@ class FotosDAO{
             // Asignar el idAnuncio como parámetro y ejecutar la consulta
             $stmt->bind_param("i", $idAnuncio);
             $stmt->execute();
-    
+            
             // Obtener el resultado y procesar los datos de las fotos no principales
             $result = $stmt->get_result();
             while ($row = $result->fetch_assoc()) {
@@ -70,34 +70,68 @@ class FotosDAO{
     }
     
     function borrarFotoYAnuncio($fotoId = null, $anuncioId = null): bool {
-        // Si se proporciona $fotoId y $anuncioId, se borra la foto asociada al anuncio
         if ($fotoId !== null && $anuncioId !== null) {
-            if (!$stmt = $this->conn->prepare("DELETE FROM fotos WHERE id = ? AND idAnuncio = ?")) {
-                die("Error al preparar la consulta delete: " . $this->conn->error);
+            // Obtener la información de la foto
+            if (!$stmt = $this->conn->prepare("SELECT nombre FROM fotos WHERE id = ? AND idAnuncio = ?")) {
+                die("Error al preparar la consulta select: " . $this->conn->error);
             }
             $stmt->bind_param('ii', $fotoId, $anuncioId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            // Verificar si se encontró la foto asociada al anuncio
+            if ($row = $result->fetch_assoc()) {
+                $fotoNombre = $row['nombre'];
+    
+                // Eliminar la foto de la base de datos
+                if (!$stmt = $this->conn->prepare("DELETE FROM fotos WHERE id = ? AND idAnuncio = ?")) {
+                    die("Error al preparar la consulta delete: " . $this->conn->error);
+                }
+                $stmt->bind_param('ii', $fotoId, $anuncioId);
+                $stmt->execute();
+    
+                // Eliminar el archivo físico de la carpeta
+                $rutaArchivo = "../fotosAnuncios/$fotoNombre";
+                if (file_exists($rutaArchivo)) {
+                    unlink($rutaArchivo);
+                }
+                
+                return true;
+            } else {
+                echo "No se encontró ninguna foto para el idAnuncio proporcionado.";
+                return false;
+            }
         } else {
-            // Si no se proporcionan ambas IDs, borra todas las fotos relacionadas con un anuncio
+            // Si no se proporcionan ambas IDs, borrar todas las fotos relacionadas con un anuncio
+            if (!$stmt = $this->conn->prepare("SELECT nombre FROM fotos WHERE idAnuncio = ?")) {
+                die("Error al preparar la consulta select: " . $this->conn->error);
+            }
+            $stmt->bind_param('i', $anuncioId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            while ($row = $result->fetch_assoc()) {
+                $fotoNombre = $row['nombre'];
+    
+                // Eliminar cada foto de la carpeta
+                $rutaArchivo = "../fotosAnuncios/$fotoNombre";
+                if (file_exists($rutaArchivo)) {
+                    unlink($rutaArchivo);
+                }
+            }
+    
+            // Eliminar todas las fotos de la base de datos
             if (!$stmt = $this->conn->prepare("DELETE FROM fotos WHERE idAnuncio = ?")) {
                 die("Error al preparar la consulta delete: " . $this->conn->error);
             }
             $stmt->bind_param('i', $anuncioId);
-        }
+            $stmt->execute();
     
-        if ($stmt->execute()) {
-            // Eliminar el archivo de la carpeta si $fotoId está definido
-            if ($fotoId !== null) {
-                $rutaArchivo = obtenerRutaArchivo($fotoId); // Reemplaza esto con tu lógica para obtener la ruta del archivo
-                if (file_exists($rutaArchivo)) {
-                    unlink($rutaArchivo); // Elimina el archivo físico de la carpeta
-                }
-            }
-            
-            return $stmt->affected_rows > 0;
-        } else {
-            return false;
+            return true;
         }
     }
+    
+    
     
 
     function insert(Foto $foto): int|bool {
@@ -128,5 +162,41 @@ class FotosDAO{
         $stmt->bind_param('ii', $idAnun,$idFoto);
         return $stmt->execute();
     }
+
+
+    function actualizaFotoPrincipal($anuncioId, $nuevaFotoPrincipal) {
+        // Eliminar la foto principal anterior del anuncio
+        $this->eliminarFotoPrincipalDeAnuncio($anuncioId);
+    
+        // Insertar la nueva foto principal
+        $idFotoGenerada = $this->insert($nuevaFotoPrincipal);
+        $this->modifyInsert($idFotoGenerada, $anuncioId);
+    }
+    
+    function actualizaFotosSecundarias($anuncioId, $nuevasFotos) {
+        // Eliminar fotos secundarias anteriores del anuncio
+        $this->eliminarFotosSecundariasDeAnuncio($anuncioId);
+    
+        // Insertar las nuevas fotos secundarias
+        foreach ($nuevasFotos as $foto) {
+            $idFotoGenerada = $this->insert($foto);
+            $this->modifyInsert($idFotoGenerada, $anuncioId);
+        }
+    }
+    
+    function eliminarFotoPrincipalDeAnuncio($anuncioId) {
+        $query = "DELETE FROM fotos WHERE idAnuncio = ? AND fotoPrincipal = 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param('i', $anuncioId);
+        $stmt->execute();
+    }
+    
+    function eliminarFotosSecundariasDeAnuncio($anuncioId) {
+        $query = "DELETE FROM fotos WHERE idAnuncio = ? AND fotoPrincipal = 0";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param('i', $anuncioId);
+        $stmt->execute();
+    }
+    
 
 }

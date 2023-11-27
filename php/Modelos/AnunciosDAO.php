@@ -170,19 +170,26 @@ class AnunciosDAO{
     /**
      * 
      */
-    function update($anuncio){
-        if(!$stmt = $this->conn->prepare("UPDATE anuncios SET titulo=?, descripcion=?, precio=?, fechaPublicacion=?, idUsuario=?, idFoto=? WHERE id=?")){
-            die("Error al preparar la consulta update: " . $this->conn->error );
+    function update(Anuncio $anuncio) {
+        if (!$stmt = $this->conn->prepare("UPDATE anuncios SET titulo=?, descripcion=?, precio=?, fechaPublicacion=?, idUsuario=? WHERE id=?")) {
+            die("Error al preparar la consulta update: " . $this->conn->error);
         }
+    
         $id = $anuncio->getId();
         $titulo = $anuncio->getTitulo();
         $descripcion = $anuncio->getDescripcion();
         $precio = $anuncio->getPrecio();
         $fechaPubli = $anuncio->getFechaPubli();
-        $idFoto = $anuncio->getIdFoto();
         $idUsuario = $anuncio->getIdUsuario();
-        $stmt->bind_param('ssdsiii', $titulo, $descripcion, $precio, $fechaPubli, $idUsuario, $idFoto, $id);
-        return $stmt->execute();
+    
+        $stmt->bind_param('ssdsii', $titulo, $descripcion, $precio, $fechaPubli, $idUsuario, $id);
+        
+        if ($stmt->execute()) {
+            return true; // La consulta se ejecutó con éxito
+        } else {
+            return false; // Ocurrió un error al ejecutar la consulta
+        }
     }
+    
     
 }

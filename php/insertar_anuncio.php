@@ -30,28 +30,47 @@
 
 
     if($_SERVER['REQUEST_METHOD']=='POST'){
-
         //Limpiamos los datos que vienen del usuario
         $titulo = htmlspecialchars($_POST['titulo']);
         $descripcion =  htmlspecialchars($_POST['descripcion']);
         $precio =  htmlspecialchars($_POST['precio']);
         $foto = $_FILES['foto']['name']; 
+    
+        // Separamos la parte entera y la decimal
+        $partes = explode(',', $precio);
 
+        if (count($partes) === 2) {
+            // La coma está presente en el precio, dividir la parte entera y decimal
+            $parte_entera = $partes[0]; // Parte entera del número
+            $parte_decimal = $partes[1]; // Parte decimal del número
+
+            $longitud_entera = strlen($parte_entera); // Longitud de la parte entera
+            $longitud_decimal = strlen($parte_decimal); // Longitud de la parte decimal
+        } else {
+            // No se encontró una coma, considerar todo como parte entera y la parte decimal como vacía
+            $parte_entera = $precio;
+            $parte_decimal = '';
+            $longitud_entera = strlen($parte_entera); // Longitud de la parte entera
+            $longitud_decimal = 0; // Longitud de la parte decimal será cero
+        }
 
         //Validamos los datos
-        if(empty($titulo) || empty($descripcion) || empty($foto) || empty($precio)){
+        if (empty($titulo) || empty($descripcion) || empty($foto) || empty($precio)){
             $error = "Los campos obligatorios son: Titulo/Descripcion/Foto/Precio";
+        } elseif ($longitud_entera > 7 || $longitud_decimal > 2) {
+            // El número excede la longitud permitida
+            $error = "El precio no puede ser mayor a 9999999.99€";
         }else{
             if($_FILES['foto']['type'] != 'image/jpeg' &&
             $_FILES['foto']['type'] != 'image/webp' &&
             $_FILES['foto']['type'] != 'image/png'){
-
+    
                 $error="La foto no tiene el formato admitido, debe ser jpg, webp o png";
-
+    
             }else{
                 //Calculamos un hash para el nombre del archivo
                 $foto = generarNombreArchivo($_FILES['foto']['name']);
-
+    
                 //Si existe un archivo con ese nombre volvemos a calcular el hash
                 while(file_exists("fotosAnuncios/$foto")){
                     $foto = generarNombreArchivo($_FILES['foto']['name']);
@@ -77,33 +96,33 @@
                 $anuncio->setFechaPubli($fechaHoraActual);
                 $anuncio->setPrecio($precio);
                 $idAnuncioGenerado=$anunciosDAO->insert($anuncio);
-
+    
                 $fotosDAO->modifyInsert($idFotoGenerado, $idAnuncioGenerado);
-
+    
                 $response = array();
                 $carpetaDestino = "fotosAnuncios/";
                 $archivos = $_FILES['fileInput2'];
-
+    
                 foreach ($archivos['name'] as $key => $name) {
                     $uploadOk = 1;
                     $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
                     $archivoDestino = md5(time() + rand()) . ".$extension";
-
+    
                     // Verifica si el archivo ya existe
                     while (file_exists("$carpetaDestino/$archivoDestino")) {
                         $archivoDestino = md5(time() + rand()) . ".$extension";
                     }
-
+    
                     if ($uploadOk == 1) {
                         move_uploaded_file($archivos['tmp_name'][$key], "$carpetaDestino/$archivoDestino");
-
+    
                         // Crea una instancia de Foto para cada imagen y guarda en la base de datos
                         $f = new Foto();
                         $f->setNombre($archivoDestino);
                         $f->setFotoPrincipal(false);
                         $idFotoGenerado = $fotosDAO->insert($f);
                         $fotosDAO->modifyInsert($idFotoGenerado, $idAnuncioGenerado);
-
+    
                         $response['status'] = 'success';
                         $response['message'] = "El archivo $name se ha subido correctamente.";
                         $response['filename'] = $name;
@@ -112,15 +131,13 @@
                         $response['message'] = "No se pudo subir el archivo $name.";
                     }
                 }
-
+    
                 echo json_encode($response);
-
-
+    
                 header('location: ../index.php');
                 die();
             }
         }
-
     ?>
 
     <!DOCTYPE html>
@@ -129,7 +146,12 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="../css/estilos.css">
-        <script src="https://cdn.tiny.cloud/1/<tu-clave-api>/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+        <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+        <script>
+            tinymce.init({
+                selector: '#editor'
+            });
+        </script>
         <title>Inserta Anuncio</title>
     </head>
 
@@ -167,12 +189,6 @@
             <div id="imageContainer"></div>
             <script src="../js/upload.js"></script>
             <input type="submit">
-
-            <script>
-            tinymce.init({
-                selector: '#editor'
-            });
-        </script>
         </form>
     </body>
     </html>

@@ -50,6 +50,7 @@ if (!isset($_SESSION['email']) && isset($_COOKIE['sid'])) {
         }
     }
 </script>
+
 <body>
     <div class="contenido">
         <header>
