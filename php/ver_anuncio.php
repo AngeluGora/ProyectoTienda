@@ -75,7 +75,7 @@ if (!isset($_SESSION['email']) && isset($_COOKIE['sid'])) {
                 <?php if( $anuncio!= null): ?>
                 <img src="fotosAnuncios/<?= $nombreFotoP?>" class="fotoAnuncio">
                 <h4 class="titulo"><?= $anuncio->getTitulo() ?></h4>
-                <p class="descripcion"><?= $anuncio->getDescripcion() ?></p>
+                <p class="descripcion"><?= htmlspecialchars_decode($anuncio->getDescripcion()) ?></p>
                 <p class="precio"><?= $anuncio->getPrecio() ?></p>
                 <?php foreach ($fotosNoPrincipales as $foto): ?>
                     <img src="fotosAnuncios/<?= $foto->getNombre() ?>" class="fotoNoPAnuncio">
