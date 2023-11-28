@@ -22,7 +22,9 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     //Conectamos con la BD
     $conexionDB = new ConexionDB(MYSQL_USER,MYSQL_PASS,MYSQL_HOST,MYSQL_DB);
     $conn = $conexionDB->getConexion();
-
+    if(empty($email)){
+        $error="Tiene que insertar un email";
+    }
     if(strlen($password) < 4){
         $error = "La contraseña debe tener al menos 4 caracteres";
     }
